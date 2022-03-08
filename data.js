@@ -43,7 +43,7 @@ const data = {
 
         const selectEl = el => {
             let padding = Math.max(settings.heightSpecies, settings.heightGroup);
-            console.log(padding);
+            // console.log(padding);
             if (el.pos > (win.scrollTop - padding) && el.pos < (win.scrollBottom + padding)) {
                 data.baumToDraw.push(el);
             }
@@ -54,7 +54,7 @@ const data = {
 
         data.baum.forEach(selectEl);
 
-        console.log(data.baumToDraw);
+        // console.log(data.baumToDraw);
     },
 
     // Allen Gruppen das Alter der Kinder zuweisen, damit auch die Gruppen im Diagram ein Alter haben

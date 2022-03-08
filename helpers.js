@@ -7,8 +7,8 @@ const helpers = {
         z /= dec;
         return z;
     },
-    createColor() {
-        return `hsl(${helpers.createNumber(0, 360)},70%,70%)`;
+    createColor(hueMin = 0, hueMax = 360, sat = 100, light = 50) {
+        return `hsl(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%)`;
     }
 }
 
