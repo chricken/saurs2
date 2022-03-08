@@ -1,7 +1,7 @@
 const settings = {
     lang: 'de',
-    heightGroup: 40,
-    heightSpecies: 60,
+    heightGroup: 30,
+    heightSpecies: 40,
 
 
 

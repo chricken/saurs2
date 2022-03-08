@@ -11,11 +11,13 @@ import draw from './draw.js';
 // FUNKTIONEN
 const init = () => {
     draw.init().then(
-        data.init
-    ).then(
         win.init
     ).then(
-        () => console.log(data.baum)
+        data.init
+    ).then(
+        () => draw.ages()
+    ).then(
+        () => data.update()
     ).catch(
         console.warn
     )

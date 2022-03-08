@@ -9,25 +9,35 @@ const data = {
 
     // Zeitalter
     ages: [{
+        bez: 'karbon',
+        von: 358,
+        bis: 298,
+        hue: 0
+    }, {
+        bez: 'perm',
+        von: 298,
+        bis: 251.9,
+        hue: 30
+    }, {
         bez: 'trias',
         von: 251.9,
         bis: 201.3,
-        hue: 0
+        hue: 60
     }, {
         bez: 'jura',
         von: 201.3,
         bis: 145,
-        hue: 40
+        hue: 90
     }, {
         bez: 'kreide',
         von: 145,
         bis: 66,
-        hue: 80
+        hue: 120
     }, {
         bez: 'ceno',
         von: 66,
         bis: 0,
-        hue: 120
+        hue: 150
     }],
 
     // Den gesamten Baum zu einem Array umwandeln, damit er sich besser verarbeiten lässt
@@ -44,10 +54,10 @@ const data = {
     // Ein neues Array anlegen, das nur die Spezies enthält, die im Viewport liegen
     fillBaumToDraw() {
         data.baumToDraw = [];
-
         const selectEl = el => {
             let padding = Math.max(settings.heightSpecies, settings.heightGroup);
-            // console.log(padding);
+            // console.log(el.pos, (win.scrollTop - padding), (win.scrollBottom + padding));
+
             if (el.pos > (win.scrollTop - padding) && el.pos < (win.scrollBottom + padding)) {
                 data.baumToDraw.push(el);
             }
@@ -58,7 +68,7 @@ const data = {
 
         data.baum.forEach(selectEl);
 
-        // console.log(data.baumToDraw);
+        console.log(data.baumToDraw);
     },
 
     // Allen Gruppen das Alter der Kinder zuweisen, damit auch die Gruppen im Diagram ein Alter haben
@@ -106,7 +116,7 @@ const data = {
     // Jedem Mitglied des Astes eine individuelle Farbe geben
     colorize(ast) {
         ast.forEach(el => {
-            el.color = helpers.createColor();
+            el.color = helpers.createColor(0, 360, 50, 70);
             if (el.children) {
                 data.colorize(el.children)
             }
@@ -148,8 +158,6 @@ const data = {
             () => data.colorize(data.baum)
         ).then(
             () => data.calcPos(data.baum, 0)
-        ).then(
-            () => data.update()
         )
     }
 }

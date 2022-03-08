@@ -23,7 +23,13 @@ const win = {
         return new Promise(resolve => {
             window.addEventListener('resize', win.handleResize);
             window.addEventListener('scroll', win.handleScroll);
-            win.handleResize();
+
+            // Größen auslesen ohne Redraw
+            draw.cAges.width = window.innerWidth;
+            draw.cAges.height = window.innerHeight;
+            draw.cDiagram.width = window.innerWidth;
+            draw.cDiagram.height = window.innerHeight;
+            //win.handleResize();
             win.handleScroll();
             resolve();
         })
