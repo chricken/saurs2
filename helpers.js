@@ -9,6 +9,9 @@ const helpers = {
     },
     createColor(hueMin = 0, hueMax = 360, sat = 100, light = 50) {
         return `hsl(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%)`;
+    },
+    createColorTrans(hueMin = 0, hueMax = 360, sat = 100, light = 50, alpha = 1) {
+        return `hsla(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%,alpha)`;
     }
 }
 

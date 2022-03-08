@@ -11,9 +11,9 @@ import draw from './draw.js';
 // FUNKTIONEN
 const init = () => {
     draw.init().then(
-        win.init
-    ).then(
         data.init
+    ).then(
+        win.init
     ).then(
         () => console.log(data.baum)
     ).catch(
@@ -22,4 +22,4 @@ const init = () => {
 }
 
 // INIT
-init();
+window.addEventListener('load', init);

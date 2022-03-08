@@ -11,19 +11,23 @@ const data = {
     ages: [{
         bez: 'trias',
         von: 251.9,
-        bis: 201.3
+        bis: 201.3,
+        hue: 0
     }, {
         bez: 'jura',
         von: 201.3,
-        bis: 145
+        bis: 145,
+        hue: 40
     }, {
         bez: 'kreide',
         von: 145,
-        bis: 66
+        bis: 66,
+        hue: 80
     }, {
         bez: 'ceno',
         von: 66,
-        bis: 0
+        bis: 0,
+        hue: 120
     }],
 
     // Den gesamten Baum zu einem Array umwandeln, damit er sich besser verarbeiten lässt
