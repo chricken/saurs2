@@ -15,7 +15,7 @@ const init = () => {
     ).then(
         data.init
     ).then(
-        () => console.log(data)
+        () => console.log(data.baum)
     ).catch(
         console.warn
     )

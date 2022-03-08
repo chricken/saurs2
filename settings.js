@@ -2,6 +2,9 @@ const settings = {
     lang: 'de',
     heightGroup: 40,
     heightSpecies: 60,
+
+
+
     loadLanguage() {
         // Sprache laden
         settings.language = localStorage.getItem('language') || settings.language;

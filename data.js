@@ -1,8 +1,30 @@
 import settings from "./settings.js";
+import helpers from './helpers.js';
+import win from "./win.js";
+import draw from "./draw.js";
 
 const data = {
     // Teilbaum im sichtbaren Bereich
     baumToDraw: [],
+
+    // Zeitalter
+    ages: [{
+        bez: 'trias',
+        von: 251.9,
+        bis: 201.3
+    }, {
+        bez: 'jura',
+        von: 201.3,
+        bis: 145
+    }, {
+        bez: 'kreide',
+        von: 145,
+        bis: 66
+    }, {
+        bez: 'ceno',
+        von: 66,
+        bis: 0
+    }],
 
     // Den gesamten Baum zu einem Array umwandeln, damit er sich besser verarbeiten lässt
     changeObjectToArray(aeste) {
@@ -13,6 +35,26 @@ const data = {
             if (a.children) a.children = data.changeObjectToArray(a.children);
             return a;
         })
+    },
+
+    // Ein neues Array anlegen, das nur die Spezies enthält, die im Viewport liegen
+    fillBaumToDraw() {
+        data.baumToDraw = [];
+
+        const selectEl = el => {
+            let padding = Math.max(settings.heightSpecies, settings.heightGroup);
+            console.log(padding);
+            if (el.pos > (win.scrollTop - padding) && el.pos < (win.scrollBottom + padding)) {
+                data.baumToDraw.push(el);
+            }
+            if (el.children) {
+                el.children.forEach(selectEl);
+            }
+        }
+
+        data.baum.forEach(selectEl);
+
+        console.log(data.baumToDraw);
     },
 
     // Allen Gruppen das Alter der Kinder zuweisen, damit auch die Gruppen im Diagram ein Alter haben
@@ -57,9 +99,22 @@ const data = {
         return pos;
     },
 
-    /*
-    TODO: Gruppen sollen einen Pfeil tragen. Wird der angeklickt, dann wird die Gruppe zusammengeklappt
-    */
+    // Jedem Mitglied des Astes eine individuelle Farbe geben
+    colorize(ast) {
+        ast.forEach(el => {
+            el.color = helpers.createColor();
+            if (el.children) {
+                data.colorize(el.children)
+            }
+        })
+    },
+
+    // Baum aktualisieren
+    update() {
+        data.fillBaumToDraw();
+        draw.diagram();
+    },
+
     init() {
         return Promise.all([
             fetch('data/daten.json'),
@@ -86,9 +141,11 @@ const data = {
         ).then(
             () => data.agesToGroup(data.baum, [])
         ).then(
+            () => data.colorize(data.baum)
+        ).then(
             () => data.calcPos(data.baum, 0)
         ).then(
-            console.log
+            () => data.update()
         )
     }
 }
