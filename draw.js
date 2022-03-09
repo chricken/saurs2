@@ -65,6 +65,42 @@ const draw = {
             height - 10
         )
     },
+
+    bezeichnung(el, ctx, width, height, left, right) {
+        let padding = 5;
+        let fontSize = 14;
+        ctx.fillStyle = 'hsla(0,0%,100%,.8)';
+        ctx.strokeStyle = 'hsla(0,0%,0%,.5)';
+
+        ctx.lineWidth = 1;
+
+        // Füllung
+        ctx.fillRect(
+            left + padding,
+            el.pos + padding,
+            100,
+            fontSize * 1.6
+        )
+
+        // Rand
+        ctx.strokeRect(
+            left + padding,
+            el.pos + padding,
+            100,
+            fontSize * 1.6
+        )
+
+        // Text
+        ctx.fillStyle = 'hsla(0,0%,0%,1)';
+        ctx.textAlign = 'left';
+        ctx.font = `${fontSize}px oswald`;
+        ctx.fillText(
+            el.bez,
+            left + padding + padding,
+            el.pos + (padding / 2) + padding + fontSize,
+        );
+
+    },
     group(el, ctx, width, height) {
 
         let anfang = data.ages[0].von;
@@ -88,7 +124,9 @@ const draw = {
             right - left,
             settings.heightGroup - 2
         )
+        draw.bezeichnung(el, ctx, width, height, left, right)
     },
+
     species(el, ctx, width, height) {
 
         let anfang = data.ages[0].von;
@@ -112,6 +150,7 @@ const draw = {
             right - left,
             settings.heightSpecies - 2
         )
+        draw.bezeichnung(el, ctx, width, height, left, right)
     },
     diagram() {
         let width = draw.cDiagram.width;
