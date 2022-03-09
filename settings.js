@@ -1,6 +1,6 @@
 const settings = {
     lang: 'de',
-    heightGroup: 60,
+    heightGroup: 40,
     heightSpecies: 40,
 
 

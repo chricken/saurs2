@@ -52,6 +52,7 @@ const draw = {
         let padding = 5;
         let top = padding;
         let bottom = height - padding;
+        let barHeight = height - padding - padding;
         // Kasten zeichnen
         ctx.fillStyle = `hsla(0,0%,0%,.8)`;
 
@@ -59,7 +60,7 @@ const draw = {
             top,
             padding,
             width * .01,
-            height - padding - padding
+            barHeight
         )
         ctx.strokeStyle = `hsla(0,0%,100%,1)`;
         ctx.lineWidth = 1;
@@ -67,47 +68,59 @@ const draw = {
             top,
             padding,
             width * .01,
-            height - padding - padding
+            barHeight
         )
 
         // Handle zeichnen
-        console.log(win.scrollTop);
+        const relCHeight = barHeight * (draw.cDiagram.height / data.lowerEdge);
+        const posScrollHandle = (win.scrollTop) * (barHeight / data.lowerEdge);
+        // console.log(posScrollHandle);
+
+        ctx.fillStyle = `hsla(0,0%,100%,.8)`;
+
+        ctx.fillRect(
+            padding,
+            padding + posScrollHandle,
+            width * .01,
+            relCHeight
+        )
+        ctx.strokeStyle = `hsla(0,0%,100%,1)`;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(
+            padding,
+            padding + posScrollHandle,
+            width * .01,
+            relCHeight
+        )
     },
 
-    bezeichnung(el, ctx, width, height, left, right, fontSize = 14) {
+    bezeichnung(el, ctx, width, height, left, right, top, fontSize = 14) {
         let padding = 5;
+        let content = el.bez;
+
+        ctx.textAlign = 'left';
+        ctx.font = `${fontSize}px oswald`;
+        let textWidth = ctx.measureText(content).width + padding * 2;
+
         ctx.fillStyle = 'hsla(0,0%,100%,.8)';
         ctx.strokeStyle = 'hsla(0,0%,0%,.5)';
 
         ctx.lineWidth = 1;
+        if (left > width - textWidth) left -= textWidth + padding;
+        else left += padding;
 
         // Füllung
-        ctx.fillRect(
-            left + padding,
-            el.pos + padding,
-            100,
-            fontSize * 1.6
-        )
+        ctx.fillRect(left, top + padding, textWidth, fontSize * 1.6);
 
         // Rand
-        ctx.strokeRect(
-            left + padding,
-            el.pos + padding,
-            100,
-            fontSize * 1.6
-        )
+        ctx.strokeRect(left, top + padding, textWidth, fontSize * 1.6)
 
         // Text
         ctx.fillStyle = 'hsla(0,0%,0%,1)';
-        ctx.textAlign = 'left';
-        ctx.font = `${fontSize}px oswald`;
-        ctx.fillText(
-            el.bez,
-            left + padding + padding,
-            el.pos + (padding / 2) + padding + fontSize,
-        );
 
+        ctx.fillText(content, left + padding, top + (padding) + fontSize);
     },
+    
     group(el, ctx, width, height) {
 
         let padding = 2;
@@ -115,11 +128,12 @@ const draw = {
 
         let left = width - (width / anfang * el.mioJhrVon);
         let right = width - (width / anfang * el.mioJhrBis);
+        let top = el.pos + padding - win.scrollTop;
 
         ctx.fillStyle = el.color;
         ctx.fillRect(
             left,
-            el.pos + padding,
+            top,
             right - left,
             settings.heightGroup - (padding * 2)
         )
@@ -128,26 +142,26 @@ const draw = {
         ctx.lineWidth = 1;
         ctx.strokeRect(
             left,
-            el.pos + padding,
+            top,
             right - left,
             settings.heightGroup - (padding * 2)
         )
-        draw.bezeichnung(el, ctx, width, height, left, right, 10)
+        draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
     },
 
     species(el, ctx, width, height) {
-
         let padding = 1;
 
         let anfang = data.ages[0].von;
 
         let left = width - (width / anfang * el.mioJhrVon);
         let right = width - (width / anfang * el.mioJhrBis);
+        let top = el.pos + padding - win.scrollTop;
 
         ctx.fillStyle = el.color;
         ctx.fillRect(
             left,
-            el.pos + padding,
+            top,
             right - left,
             settings.heightSpecies - (padding * 2)
         )
@@ -156,17 +170,18 @@ const draw = {
         ctx.lineWidth = 1;
         ctx.strokeRect(
             left,
-            el.pos + padding,
+            top,
             right - left,
             settings.heightSpecies - (padding * 2)
         )
-        draw.bezeichnung(el, ctx, width, height, left, right, 14)
+        draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
     },
     diagram() {
         let width = draw.cDiagram.width;
         let height = draw.cDiagram.height;
         let ctx = draw.cDiagram.getContext('2d');
         ctx.clearRect(0, 0, width, height);
+
         draw.scrollbar(ctx, width, height);
 
         // Gruppen und Spezies zeichnen

@@ -69,7 +69,7 @@ const data = {
 
         data.baum.forEach(selectEl);
 
-        console.log(data.baumToDraw);
+        //console.log(data.baumToDraw);
     },
 
     // Allen Gruppen das Alter der Kinder zuweisen, damit auch die Gruppen im Diagram ein Alter haben
@@ -116,6 +116,17 @@ const data = {
         })
 
         return pos;
+    },
+
+    insertParents(ast) {
+        ast.forEach(el => {
+            if (el.children) {
+                el.children.forEach(child => {
+                    child.parent = el;
+                })
+                data.insertParents(el.children);
+            }
+        })
     },
 
     // Jedem Mitglied des Astes eine individuelle Farbe geben
@@ -165,6 +176,10 @@ const data = {
             () => data.calcPos(data.baum, 0)
         ).then(
             () => data.lowerEdge += (Math.max(settings.heightGroup, settings.heightSpecies))
+        ).then(
+            () => data.insertParents(data.baum)
+        ).then(
+            () => console.log(data.baum)
         )
     }
 }
