@@ -6,6 +6,7 @@ import draw from "./draw.js";
 const data = {
     // Teilbaum im sichtbaren Bereich
     baumToDraw: [],
+    lowerEdge: 0,
 
     // Zeitalter
     ages: [{
@@ -109,7 +110,11 @@ const data = {
                     pos = data.calcPos(el.children, pos);
                 }
             }
+            data.lowerEdge = (pos > data.lowerEdge) ?
+                pos :
+                data.lowerEdge;
         })
+
         return pos;
     },
 
@@ -158,6 +163,8 @@ const data = {
             () => data.colorize(data.baum)
         ).then(
             () => data.calcPos(data.baum, 0)
+        ).then(
+            () => data.lowerEdge += (Math.max(settings.heightGroup, settings.heightSpecies))
         )
     }
 }

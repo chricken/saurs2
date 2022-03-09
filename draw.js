@@ -48,27 +48,34 @@ const draw = {
 
         })
     },
-    scollbar(ctx, width, height) {
+    scrollbar(ctx, width, height) {
+        let padding = 5;
+        let top = padding;
+        let bottom = height - padding;
+        // Kasten zeichnen
         ctx.fillStyle = `hsla(0,0%,0%,.8)`;
+
         ctx.fillRect(
-            5,
-            5,
+            top,
+            padding,
             width * .01,
-            height - 10
+            height - padding - padding
         )
         ctx.strokeStyle = `hsla(0,0%,100%,1)`;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.strokeRect(
-            5,
-            5,
+            top,
+            padding,
             width * .01,
-            height - 10
+            height - padding - padding
         )
+
+        // Handle zeichnen
+        console.log(win.scrollTop);
     },
 
-    bezeichnung(el, ctx, width, height, left, right) {
+    bezeichnung(el, ctx, width, height, left, right, fontSize = 14) {
         let padding = 5;
-        let fontSize = 14;
         ctx.fillStyle = 'hsla(0,0%,100%,.8)';
         ctx.strokeStyle = 'hsla(0,0%,0%,.5)';
 
@@ -103,6 +110,7 @@ const draw = {
     },
     group(el, ctx, width, height) {
 
+        let padding = 2;
         let anfang = data.ages[0].von;
 
         let left = width - (width / anfang * el.mioJhrVon);
@@ -111,24 +119,26 @@ const draw = {
         ctx.fillStyle = el.color;
         ctx.fillRect(
             left,
-            el.pos + 2,
+            el.pos + padding,
             right - left,
-            settings.heightGroup - 2
+            settings.heightGroup - (padding * 2)
         )
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.lineWidth = 1;
         ctx.strokeRect(
             left,
-            el.pos + 2,
+            el.pos + padding,
             right - left,
-            settings.heightGroup - 2
+            settings.heightGroup - (padding * 2)
         )
-        draw.bezeichnung(el, ctx, width, height, left, right)
+        draw.bezeichnung(el, ctx, width, height, left, right, 10)
     },
 
     species(el, ctx, width, height) {
 
+        let padding = 1;
+
         let anfang = data.ages[0].von;
 
         let left = width - (width / anfang * el.mioJhrVon);
@@ -137,27 +147,27 @@ const draw = {
         ctx.fillStyle = el.color;
         ctx.fillRect(
             left,
-            el.pos + 2,
+            el.pos + padding,
             right - left,
-            settings.heightSpecies - 2
+            settings.heightSpecies - (padding * 2)
         )
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.lineWidth = 1;
         ctx.strokeRect(
             left,
-            el.pos + 2,
+            el.pos + padding,
             right - left,
-            settings.heightSpecies - 2
+            settings.heightSpecies - (padding * 2)
         )
-        draw.bezeichnung(el, ctx, width, height, left, right)
+        draw.bezeichnung(el, ctx, width, height, left, right, 14)
     },
     diagram() {
         let width = draw.cDiagram.width;
         let height = draw.cDiagram.height;
         let ctx = draw.cDiagram.getContext('2d');
         ctx.clearRect(0, 0, width, height);
-        draw.scollbar(ctx, width, height);
+        draw.scrollbar(ctx, width, height);
 
         // Gruppen und Spezies zeichnen
         data.baumToDraw.forEach(el => {
