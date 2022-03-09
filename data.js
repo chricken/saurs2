@@ -129,6 +129,17 @@ const data = {
         })
     },
 
+    // Nach übergebenem Paremeter sortieren
+    sort(ast, sortBy, asc) {
+
+        if (asc) ast.sort((a, b) => a[sortBy] < b[sortBy] ? -1 : 1);
+        else ast.sort((a, b) => a[sortBy] > b[sortBy] ? -1 : 1);
+
+        ast.forEach(el => {
+            if (el.children) data.sort(el.children, sortBy)
+        })
+    },
+
     // Jedem Mitglied des Astes eine individuelle Farbe geben
     colorize(ast) {
         ast.forEach(el => {
@@ -168,6 +179,10 @@ const data = {
             }
         ).then(
             () => data.baum = data.changeObjectToArray(data.baum)
+        ).then(
+            () => data.sort(data.baum, 'bez', true)
+        ).then(
+            () => data.sort(data.baum, 'mioJhrVon', false)
         ).then(
             () => data.agesToGroup(data.baum, [])
         ).then(

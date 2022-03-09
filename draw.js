@@ -5,7 +5,8 @@ import win from './win.js';
 import settings from './settings.js';
 
 const draw = {
-
+    linkPadding: 20,
+    linkLeftStop: 0,
     ages() {
         let anfang = data.ages[0].von;
         let width = draw.cAges.width;
@@ -37,7 +38,7 @@ const draw = {
             )
 
             // Beschriftung
-            ctx.fillStyle = 'hsla(0,0%,0%,.5)';
+            ctx.fillStyle = 'hsla(0,0%,0%,.2)';
 
             ctx.textAlign = 'right';
             ctx.font = '80px oswald';
@@ -120,7 +121,7 @@ const draw = {
 
         ctx.fillText(content, left + padding, top + (padding) + fontSize);
     },
-    
+
     group(el, ctx, width, height) {
 
         let padding = 2;
@@ -129,6 +130,9 @@ const draw = {
         let left = width - (width / anfang * el.mioJhrVon);
         let right = width - (width / anfang * el.mioJhrBis);
         let top = el.pos + padding - win.scrollTop;
+
+        // Für die Verbindungslinien wird hier die linke Kante definiert
+        // draw.linkLeftStop = left - draw.linkPadding;
 
         ctx.fillStyle = el.color;
         ctx.fillRect(
@@ -146,6 +150,7 @@ const draw = {
             right - left,
             settings.heightGroup - (padding * 2)
         )
+        //draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
     },
 
@@ -174,7 +179,110 @@ const draw = {
             right - left,
             settings.heightSpecies - (padding * 2)
         )
+        // draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
+    },
+    outsideLine(ast, ctx, width) {
+        let kurvenradius = 20;
+        let paddingParent = 20;
+        let paddingChild = 10;
+
+        ast.forEach(el => {
+            // console.log(el);
+            if (el.parent) {
+                let anfang = data.ages[0].von;
+                let padding = 1;
+
+                let left = width - (width / anfang * el.mioJhrVon);
+                let top = el.pos + padding - win.scrollTop;
+
+                let parentLeft = width - (width / anfang * el.parent.mioJhrVon);
+                let parentTop = el.parent.pos - win.scrollTop;
+
+                // Settings
+                ctx.lineWidth = 1;
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = '#000';
+
+                // Linien zeichnen
+                ctx.beginPath();
+
+                ctx.moveTo(
+                    parentLeft,
+                    parentTop + paddingParent
+                );
+                ctx.lineTo(
+                    parentLeft - draw.linkPadding,
+                    parentTop + paddingParent
+                );
+                ctx.lineTo(
+                    parentLeft - draw.linkPadding - kurvenradius,
+                    parentTop + paddingParent + kurvenradius
+                );
+                ctx.lineTo(
+                    parentLeft - (kurvenradius/2),
+                    top + paddingChild
+                );
+                ctx.lineTo(
+                    left,
+                    top + paddingChild
+                );
+                ctx.stroke();
+
+                // Pfeil anhängen
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.moveTo(left, top + paddingChild);
+                ctx.lineTo(left - 5, top + paddingChild - 5);
+                ctx.lineTo(left - 5, top + paddingChild + 5);
+                ctx.lineTo(left, top + paddingChild);
+                ctx.fill();
+
+                /*
+                    // Linien zeichnen
+                    ctx.beginPath();
+                    ctx.moveTo(parentLeft - draw.linkPadding, parentTop + 30);
+                    ctx.lineTo(parentLeft - (draw.linkPadding / 2), top + 10);
+                    ctx.stroke();
+                */
+            }
+            // Kinder iterieren
+            if (el.children) draw.outsideLine(el.children, ctx, width);
+        })
+    },
+    link(el, ctx, width, height, left, top) {
+        if (el.parent) {
+
+            let anfang = data.ages[0].von;
+            let parentLeft = width - (width / anfang * el.parent.mioJhrVon);
+            let parentTop = el.parent.pos - win.scrollTop;
+
+            // Settings
+            ctx.lineWidth = 1;
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#000';
+
+            // Linien zeichnen
+            ctx.beginPath();
+
+            ctx.moveTo(parentLeft, parentTop + 20);
+            ctx.lineTo(parentLeft - draw.linkPadding + 10, parentTop + 20);
+            ctx.lineTo(parentLeft - draw.linkPadding, parentTop + 30);
+            ctx.lineTo(parentLeft - (draw.linkPadding / 2), top + 10);
+            ctx.lineTo(left, top + 10);
+            ctx.stroke();
+
+            // Pfeil anhängen
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.moveTo(left, top + 10);
+            ctx.lineTo(left - 5, top + 5);
+            ctx.lineTo(left - 5, top + 15);
+            ctx.lineTo(left, top + 10);
+            ctx.fill();
+
+            //console.log(left, parentLeft);
+        }
     },
     diagram() {
         let width = draw.cDiagram.width;
@@ -189,6 +297,11 @@ const draw = {
             if (el.children) draw.group(el, ctx, width, height)
             else draw.species(el, ctx, width, height)
         })
+
+        // Linien außerhalb des Viewports zeichnen
+
+        draw.outsideLine(data.baum, ctx, width);
+
     },
     init() {
         return new Promise(resolve => {
