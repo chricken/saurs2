@@ -7,13 +7,32 @@ const helpers = {
         z /= dec;
         return z;
     },
-    createColor(hueMin = 0, hueMax = 360, sat = 100, light = 50) {
-        return `hsl(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%)`;
+    createColor({
+        hueMin = 0,
+        hueMax = 360,
+        satMin = 0,
+        satMax = 100,
+        lightMin = 0,
+        lightMax = 100
+    }) {
+        let z = helpers.createNumber;
+        //if ( )
+        return `hsl(${z(hueMin, hueMax)},${z(satMin, satMax)}%,${z(lightMin, lightMax)}%)`;
     },
-    createColorTrans(hueMin = 0, hueMax = 360, sat = 100, light = 50, alpha = 1) {
-        return `hsla(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%,alpha)`;
+    createColorTrans({
+        hueMin = 0,
+        hueMax = 360,
+        satMin = 0,
+        satMax = 100,
+        lightMin = 0,
+        lightMax = 100,
+        alphaMin = 0,
+        alphaMax = 1
+    }) {
+        let z = helpers.createNumber;
+        return `hsla(${z(hueMin, hueMax)},${z(satMin, satMax)}%,${z(lightMin, lightMax)}%,${z(alphaMin * 100, alphaMax * 100) / 100})`;
     },
-    crop(value, min = 0, max = 1){
+    crop(value, min = 0, max = 1) {
         value = Math.max(value, min);
         value = Math.min(value, max);
         return value;

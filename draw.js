@@ -15,8 +15,25 @@ const draw = {
     parentLinkColor: 'hsla(0,100%,40%,.5)',
     linkColor: 'hsla(0,0%,0%,.5)',
     childLinkColor: 'hsla(120,100%,40%,.5)',
+    selectedColor: 'hsla(0,0%,0%,1)',
 
-    selectedColor: '#000',
+    hueGroup:{
+        hueMin: 170,
+        hueMax:190,
+        satMin:60,
+        satMax:80,
+        lightMin:30,
+        lightMax:40,
+    },
+    hueSpecies:{
+        hueMin: -10,
+        hueMax:10,
+        satMin:30,
+        satMax:40,
+        lightMin:50,
+        lightMax:50,
+    },
+
     selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
     hoverColor: 'hsla(0,0%,50%,.2)',
 
@@ -67,6 +84,7 @@ const draw = {
             draw.underlay(el, ctx, width);
         })
     },
+
     scrollbar(ctx, width, height) {
         let padding = draw.scrollbarPadding;
         let top = padding;
@@ -119,7 +137,7 @@ const draw = {
     bezeichnung(el, ctx, width, height, left, right, top, fontSize = 14) {
         let padding = 5;
         let content = el.bez;
-        if (el.children) content += ` (${el.numSpecies})`
+        if (el.children) content += ` (${el.numSpecies} ${data.lang['spezies'][settings.lang]})`
         
         if(el[settings.lang]) content += ` - ${el[settings.lang]}`;
 
@@ -147,7 +165,6 @@ const draw = {
     },
 
     group(el, ctx, width, height) {
-
         let padding = 2;
         let anfang = data.ages[0].von;
 

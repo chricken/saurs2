@@ -143,9 +143,12 @@ const data = {
     // Jedem Mitglied des Astes eine individuelle Farbe geben
     colorize(ast) {
         ast.forEach(el => {
-            el.color = helpers.createColor(0, 360, 50, 70);
             if (el.children) {
+                el.color = helpers.createColor(draw.hueGroup);
                 data.colorize(el.children)
+            } else {
+                el.color = helpers.createColor(draw.hueSpecies);
+
             }
         })
     },
@@ -209,7 +212,9 @@ const data = {
         ).then(
             () => data.insertParents(data.baum)
         ).then(
-            () => console.log(data.baum)
+            () => {
+                // console.log(data.baum)
+            }
         )
     }
 }
