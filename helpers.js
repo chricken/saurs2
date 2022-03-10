@@ -12,6 +12,11 @@ const helpers = {
     },
     createColorTrans(hueMin = 0, hueMax = 360, sat = 100, light = 50, alpha = 1) {
         return `hsla(${helpers.createNumber(hueMin, hueMax)},${sat}%,${light}%,alpha)`;
+    },
+    crop(value, min = 0, max = 1){
+        value = Math.max(value, min);
+        value = Math.min(value, max);
+        return value;
     }
 }
 

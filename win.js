@@ -2,6 +2,7 @@ import dom from './dom.js';
 import draw from './draw.js';
 import data from './data.js';
 import settings from './settings.js';
+import helpers from './helpers.js';
 
 
 const win = {
@@ -43,19 +44,59 @@ const win = {
     // Auswahl wird in einen dedizierten Speicher geschrieben, statt die Eigenschaft eines Elementes zu ändern
     // So spare ich das Zurücksetzen
     markSelected(evt) {
-        data.selected = data.baumToDraw.find(el => {
+        let width = draw.cDiagram.width;
+        let height = draw.cDiagram.height;
+        let padding = draw.scrollbarPadding;
+        let top = padding;
+        let bottom = height - padding;
+        let barHeight = height - padding - padding;
+        let barWidth = width * .01;
+
+        if (
+            evt.layerX > padding
+            && evt.layerX < padding + barWidth
+            && evt.layerY > padding
+            && evt.layerY < bottom
+        ) {
+            win.scrollTo(evt);
+            win.scrollbarSelected = true;
+        } else {
+            data.selected = data.baumToDraw.find(el => {
                 let h = el.children ? settings.heightGroup : settings.heightSpecies;
                 let pos = el.pos - win.scrollTop;
                 return (evt.layerY > pos) && (evt.layerY < pos + h);
             })
             // console.log(data.selected);
+        }
         draw.diagram();
+    },
+    scrollTo(evt) {
+        let width = draw.cDiagram.width;
+        let height = draw.cDiagram.height;
+        let padding = draw.scrollbarPadding;
+        let top = padding;
+        let bottom = height - padding;
+        let barHeight = height - padding - padding;
+        let barWidth = width * .01;
+
+        let pos = (evt.layerY - padding) / barHeight;
+        // console.log(pos * data.lowerEdge);
+        win.scrollTop = helpers.crop((pos * data.lowerEdge), 0, data.lowerEdge - draw.cDiagram.height);
+        
+        win.handleScroll();
+    },
+    leaveMouse(evt) {
+        win.scrollbarSelected = false;
     },
 
     // Position eintragen, an der die Maus ist, um später im Zeichenprozess die drunterliegende Spezies/Gruppe zu markieren
     handleMove(evt) {
         draw.mouseY = evt.layerY;
         draw.ages();
+
+        if (win.scrollbarSelected) {
+            win.scrollTo(evt);
+        }
     },
 
     init() {
@@ -63,7 +104,8 @@ const win = {
             window.addEventListener('resize', win.handleResize);
             window.addEventListener('scroll', win.handleScroll);
             window.addEventListener('wheel', win.handleWheel);
-            draw.cDiagram.addEventListener('click', win.markSelected);
+            draw.cDiagram.addEventListener('mousedown', win.markSelected);
+            draw.cDiagram.addEventListener('mouseup', win.leaveMouse);
             draw.cDiagram.addEventListener('mousemove', win.handleMove);
 
             // Größen auslesen ohne Redraw
@@ -72,9 +114,8 @@ const win = {
             draw.cDiagram.width = window.innerWidth;
             draw.cDiagram.height = window.innerHeight;
 
-
             win.scrollBottom = win.scrollTop + window.innerHeight;
-            //win.handleResize();
+            // win.handleResize();
             // win.handleScroll();
             resolve();
         })

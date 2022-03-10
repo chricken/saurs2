@@ -5,14 +5,21 @@ import win from './win.js';
 import settings from './settings.js';
 
 const draw = {
-    linkPadding: 20,
+    linkPadding: 25,
     linkLeftStop: 0,
+    scrollbarPadding: 10,
     mouseY: 0,
-    parentColor: '#f00',
-    childColor: '#0f0',
+    
+    parentColor: 'hsla(0,100%,40%,1)',
+    childColor:'hsla(120,100%,40%,1)',
+    parentLinkColor: 'hsla(0,100%,40%,.5)',
+    linkColor: 'hsla(0,0%,0%,.5)',
+    childLinkColor: 'hsla(120,100%,40%,.5)',
+
     selectedColor: '#000',
     selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
     hoverColor: 'hsla(0,0%,50%,.2)',
+
     ages() {
         let anfang = data.ages[0].von;
         let width = draw.cAges.width;
@@ -61,17 +68,19 @@ const draw = {
         })
     },
     scrollbar(ctx, width, height) {
-        let padding = 5;
+        let padding = draw.scrollbarPadding;
         let top = padding;
         let bottom = height - padding;
         let barHeight = height - padding - padding;
+        let barWidth = width * .01;
+
         // Kasten zeichnen
         ctx.fillStyle = `hsla(0,0%,0%,.8)`;
 
         ctx.fillRect(
             top,
             padding,
-            width * .01,
+            barWidth,
             barHeight
         )
         ctx.strokeStyle = `hsla(0,0%,100%,1)`;
@@ -79,7 +88,7 @@ const draw = {
         ctx.strokeRect(
             top,
             padding,
-            width * .01,
+            barWidth,
             barHeight
         )
 
@@ -93,15 +102,16 @@ const draw = {
         ctx.fillRect(
             padding,
             padding + posScrollHandle,
-            width * .01,
+            barWidth,
             relCHeight
         )
+
         ctx.strokeStyle = `hsla(0,0%,100%,1)`;
         ctx.lineWidth = 1;
         ctx.strokeRect(
             padding,
             padding + posScrollHandle,
-            width * .01,
+            barWidth,
             relCHeight
         )
     },
@@ -109,6 +119,9 @@ const draw = {
     bezeichnung(el, ctx, width, height, left, right, top, fontSize = 14) {
         let padding = 5;
         let content = el.bez;
+        if (el.children) content += ` (${el.numSpecies})`
+        
+        if(el[settings.lang]) content += ` - ${el[settings.lang]}`;
 
         ctx.textAlign = 'left';
         ctx.font = `${fontSize}px oswald`;
@@ -179,13 +192,13 @@ const draw = {
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.strokeRect(
-                left,
-                top,
-                right - left,
-                settings.heightGroup - (padding * 2)
-            )
-            //draw.link(el, ctx, width, height, left, top + padding);
-        draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
+            left,
+            top,
+            right - left,
+            settings.heightGroup - (padding * 2)
+        )
+        //draw.link(el, ctx, width, height, left, top + padding);
+        draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 
     species(el, ctx, width, height) {
@@ -196,6 +209,18 @@ const draw = {
         let left = width - (width / anfang * el.mioJhrVon);
         let right = width - (width / anfang * el.mioJhrBis);
         let top = el.pos + padding - win.scrollTop;
+
+
+        // Ggf Untergrund zeichnen
+        if (data.selected && data.selected == el) {
+            ctx.fillStyle = draw.selectedUnderlayColor;
+            ctx.fillRect(
+                0,
+                top,
+                width,
+                settings.heightGroup
+            )
+        }
 
         // Farben festlegen
         if (data.selected && data.selected == el) {
@@ -217,14 +242,15 @@ const draw = {
             settings.heightSpecies - (padding * 2)
         )
         ctx.strokeRect(
-                left,
-                top,
-                right - left,
-                settings.heightSpecies - (padding * 2)
-            )
-            // draw.link(el, ctx, width, height, left, top + padding);
-        draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
+            left,
+            top,
+            right - left,
+            settings.heightSpecies - (padding * 2)
+        )
+        // draw.link(el, ctx, width, height, left, top + padding);
+        draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
+
     allLinks(ast, ctx, width) {
         let kurvenradius = 10;
         let paddingParent = 20;
@@ -246,16 +272,16 @@ const draw = {
                 ctx.lineJoin = 'round';
                 if (data.selected == el) {
                     ctx.lineWidth = 3;
-                    ctx.strokeStyle = '#a00';
-                    ctx.fillStyle = '#a00';
+                    ctx.strokeStyle = draw.parentLinkColor;
+                    ctx.fillStyle = draw.parentLinkColor;
                 } else if (data.selected == el.parent) {
                     ctx.lineWidth = 3;
-                    ctx.strokeStyle = '#0a0';
-                    ctx.fillStyle = '#0a0';
+                    ctx.strokeStyle = draw.childLinkColor;
+                    ctx.fillStyle = draw.childLinkColor;
                 } else {
                     ctx.lineWidth = 1;
-                    ctx.strokeStyle = '#000';
-                    ctx.fillStyle = '#000';
+                    ctx.strokeStyle = draw.linkColor;
+                    ctx.fillStyle = draw.linkColor;
                 }
 
                 // Linien zeichnen

@@ -150,6 +150,19 @@ const data = {
         })
     },
 
+    // Spezies zählen
+    countSpecies(ast, numSpecies) {
+        let sumSpecies = 0;
+        ast.forEach(el => {
+            if (el.children) {
+                el.numSpecies = el.children.filter(child => !child.children).length
+                el.numSpecies += data.countSpecies(el.children);
+                sumSpecies += el.numSpecies;
+            }
+        })
+        return sumSpecies;
+    },
+
     // Baum aktualisieren
     update() {
         data.fillBaumToDraw();
@@ -180,11 +193,13 @@ const data = {
         ).then(
             () => data.baum = data.changeObjectToArray(data.baum)
         ).then(
-            () => data.sort(data.baum, 'bez', true)
+            () => true// data.sort(data.baum, 'bez', true)
         ).then(
             () => data.sort(data.baum, 'mioJhrVon', false)
         ).then(
             () => data.agesToGroup(data.baum, [])
+        ).then(
+            () => data.countSpecies(data.baum, [])
         ).then(
             () => data.colorize(data.baum)
         ).then(
