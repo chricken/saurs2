@@ -7,6 +7,12 @@ import settings from './settings.js';
 const draw = {
     linkPadding: 20,
     linkLeftStop: 0,
+    mouseY: 0,
+    parentColor: '#f00',
+    childColor: '#0f0',
+    selectedColor: '#000',
+    selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
+    hoverColor: 'hsla(0,0%,50%,.2)',
     ages() {
         let anfang = data.ages[0].von;
         let width = draw.cAges.width;
@@ -47,6 +53,11 @@ const draw = {
             ctx.fillText(data.lang[age.bez][settings.lang], 0, 0);
             ctx.setTransform(1, 0, 0, 1, 0, 0);
 
+        })
+
+        // Gruppen und Spezies zeichnen
+        data.baumToDraw.forEach(el => {
+            draw.underlay(el, ctx, width);
         })
     },
     scrollbar(ctx, width, height) {
@@ -131,10 +142,34 @@ const draw = {
         let right = width - (width / anfang * el.mioJhrBis);
         let top = el.pos + padding - win.scrollTop;
 
-        // Für die Verbindungslinien wird hier die linke Kante definiert
-        // draw.linkLeftStop = left - draw.linkPadding;
+        // Ggf Untergrund zeichnen
+        if (data.selected && data.selected == el) {
+            ctx.fillStyle = draw.selectedUnderlayColor;
+            ctx.fillRect(
+                0,
+                top,
+                width,
+                settings.heightGroup
+            )
+        }
 
-        ctx.fillStyle = el.color;
+        // Farben festlegen
+        if (data.selected && data.selected == el) {
+            ctx.lineWidth = 2;
+            ctx.fillStyle = draw.selectedColor;
+        } else if (data.selected && data.selected.children && data.selected.children.includes(el)) {
+            ctx.lineWidth = 2;
+            ctx.fillStyle = draw.childColor;
+        } else if (data.selected && el.children.includes(data.selected)) {
+            ctx.lineWidth = 2;
+            ctx.fillStyle = draw.parentColor;
+        } else {
+            ctx.lineWidth = 1;
+            ctx.fillStyle = el.color;
+        }
+
+
+        // Element zeichnen
         ctx.fillRect(
             left,
             top,
@@ -143,14 +178,13 @@ const draw = {
         )
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
-        ctx.lineWidth = 1;
         ctx.strokeRect(
-            left,
-            top,
-            right - left,
-            settings.heightGroup - (padding * 2)
-        )
-        //draw.link(el, ctx, width, height, left, top + padding);
+                left,
+                top,
+                right - left,
+                settings.heightGroup - (padding * 2)
+            )
+            //draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
     },
 
@@ -163,27 +197,36 @@ const draw = {
         let right = width - (width / anfang * el.mioJhrBis);
         let top = el.pos + padding - win.scrollTop;
 
-        ctx.fillStyle = el.color;
+        // Farben festlegen
+        if (data.selected && data.selected == el) {
+            ctx.lineWidth = 2;
+            ctx.fillStyle = draw.selectedColor;
+        } else if (data.selected && data.selected.children && data.selected.children.includes(el)) {
+            ctx.lineWidth = 2;
+            ctx.fillStyle = draw.childColor;
+        } else {
+            ctx.lineWidth = 1;
+            ctx.fillStyle = el.color;
+        }
+        ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
+
         ctx.fillRect(
             left,
             top,
             right - left,
             settings.heightSpecies - (padding * 2)
         )
-
-        ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
-        ctx.lineWidth = 1;
         ctx.strokeRect(
-            left,
-            top,
-            right - left,
-            settings.heightSpecies - (padding * 2)
-        )
-        // draw.link(el, ctx, width, height, left, top + padding);
+                left,
+                top,
+                right - left,
+                settings.heightSpecies - (padding * 2)
+            )
+            // draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top, 14)
     },
-    outsideLine(ast, ctx, width) {
-        let kurvenradius = 20;
+    allLinks(ast, ctx, width) {
+        let kurvenradius = 10;
         let paddingParent = 20;
         let paddingChild = 10;
 
@@ -200,11 +243,23 @@ const draw = {
                 let parentTop = el.parent.pos - win.scrollTop;
 
                 // Settings
-                ctx.lineWidth = 1;
                 ctx.lineJoin = 'round';
-                ctx.strokeStyle = '#000';
+                if (data.selected == el) {
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#a00';
+                    ctx.fillStyle = '#a00';
+                } else if (data.selected == el.parent) {
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#0a0';
+                    ctx.fillStyle = '#0a0';
+                } else {
+                    ctx.lineWidth = 1;
+                    ctx.strokeStyle = '#000';
+                    ctx.fillStyle = '#000';
+                }
 
                 // Linien zeichnen
+                // Jede Linie wird einzaln gezeichnet, da sich mglw noch etwas an den Farben ändert
                 ctx.beginPath();
 
                 ctx.moveTo(
@@ -215,12 +270,16 @@ const draw = {
                     parentLeft - draw.linkPadding,
                     parentTop + paddingParent
                 );
+                ctx.arc(
+                    parentLeft - draw.linkPadding,
+                    parentTop + paddingParent + kurvenradius,
+                    kurvenradius,
+                    1.5 * Math.PI,
+                    1 * Math.PI,
+                    true
+                )
                 ctx.lineTo(
-                    parentLeft - draw.linkPadding - kurvenradius,
-                    parentTop + paddingParent + kurvenradius
-                );
-                ctx.lineTo(
-                    parentLeft - (kurvenradius/2),
+                    parentLeft - (kurvenradius / 2),
                     top + paddingChild
                 );
                 ctx.lineTo(
@@ -230,7 +289,6 @@ const draw = {
                 ctx.stroke();
 
                 // Pfeil anhängen
-                ctx.fillStyle = '#000';
                 ctx.beginPath();
                 ctx.moveTo(left, top + paddingChild);
                 ctx.lineTo(left - 5, top + paddingChild - 5);
@@ -238,18 +296,29 @@ const draw = {
                 ctx.lineTo(left, top + paddingChild);
                 ctx.fill();
 
-                /*
-                    // Linien zeichnen
-                    ctx.beginPath();
-                    ctx.moveTo(parentLeft - draw.linkPadding, parentTop + 30);
-                    ctx.lineTo(parentLeft - (draw.linkPadding / 2), top + 10);
-                    ctx.stroke();
-                */
             }
             // Kinder iterieren
-            if (el.children) draw.outsideLine(el.children, ctx, width);
+            if (el.children) draw.allLinks(el.children, ctx, width);
         })
     },
+
+    underlay(el, ctx, width) {
+        let pos = el.pos - win.scrollTop;
+        let h = el.children ? settings.heightGroup : settings.heightSpecies;
+        // console.log(draw.mouseY, pos, h);
+        if (draw.mouseY > pos && draw.mouseY < pos + h) {
+            ctx.fillStyle = draw.hoverColor;
+            ctx.fillRect(
+                0,
+                pos,
+                width,
+                h
+            )
+        }
+    },
+
+    // Einen Link zeichnen. Wird z.Zt. nicht verwendet. 
+    // Mglw später wieder, falls die Starts und Ziele nur für sichtbare Elemente gezeichnet werden sollen
     link(el, ctx, width, height, left, top) {
         if (el.parent) {
 
@@ -292,15 +361,17 @@ const draw = {
 
         draw.scrollbar(ctx, width, height);
 
+
         // Gruppen und Spezies zeichnen
         data.baumToDraw.forEach(el => {
+            // draw.underlay(el, ctx, width);
             if (el.children) draw.group(el, ctx, width, height)
             else draw.species(el, ctx, width, height)
         })
 
-        // Linien außerhalb des Viewports zeichnen
+        // Linien auch außerhalb des Viewports zeichnen
+        draw.allLinks(data.baum, ctx, width);
 
-        draw.outsideLine(data.baum, ctx, width);
 
     },
     init() {
