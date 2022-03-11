@@ -3,6 +3,7 @@ import draw from './draw.js';
 import data from './data.js';
 import settings from './settings.js';
 import helpers from './helpers.js';
+import ui from './ui.js';
 
 
 const win = {
@@ -66,6 +67,7 @@ const win = {
                 let pos = el.pos - win.scrollTop;
                 return (evt.layerY > pos) && (evt.layerY < pos + h);
             })
+            if(data.selected) ui.updateDetails();
             // console.log(data.selected);
         }
         draw.diagram();
@@ -104,6 +106,7 @@ const win = {
             window.addEventListener('resize', win.handleResize);
             window.addEventListener('scroll', win.handleScroll);
             window.addEventListener('wheel', win.handleWheel);
+            
             draw.cDiagram.addEventListener('mousedown', win.markSelected);
             draw.cDiagram.addEventListener('mouseup', win.leaveMouse);
             draw.cDiagram.addEventListener('mousemove', win.handleMove);

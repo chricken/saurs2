@@ -12,10 +12,13 @@ const draw = {
 
     parentColor: 'hsla(0,100%,40%,1)',
     childColor: 'hsla(120,100%,40%,1)',
-    parentLinkColor: 'hsla(0,100%,40%,.5)',
     linkColor: 'hsla(0,0%,0%,.5)',
-    childLinkColor: 'hsla(120,100%,40%,.5)',
+    parentLinkColor: 'hsla(0,100%,20%,.8)',
+    childLinkColor: 'hsla(120,100%,20%,.8)',
     selectedColor: 'hsla(0,0%,0%,1)',
+
+    selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
+    hoverColor: 'hsla(0,0%,50%,.2)',
 
     imgGrungeRed: false,
     imgGrungeGreen: false,
@@ -37,9 +40,6 @@ const draw = {
         lightMin: 50,
         lightMax: 50,
     },
-
-    selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
-    hoverColor: 'hsla(0,0%,50%,.2)',
 
     ages() {
         let anfang = data.ages[0].von;
@@ -188,24 +188,19 @@ const draw = {
         }
         let grunge = false;
         ctx.fillStyle = el.color;
+        ctx.lineWidth = 1;
 
         // Farben festlegen
         if (data.selected && data.selected == el) {
             ctx.lineWidth = 2;
-            //ctx.fillStyle = draw.selectedColor;
             grunge = draw.imgGrungeBlack;
         } else if (data.selected && data.selected.children && data.selected.children.includes(el)) {
             ctx.lineWidth = 2;
-            //ctx.fillStyle = draw.childColor;
             grunge = draw.imgGrungeGreen;
         } else if (data.selected && el.children.includes(data.selected)) {
             ctx.lineWidth = 2;
-            //ctx.fillStyle = draw.parentColor;
             grunge = draw.imgGrungeRed;
-        } else {
-            ctx.lineWidth = 1;
         }
-
 
         // Element zeichnen
         ctx.fillRect(
@@ -225,9 +220,11 @@ const draw = {
 
         // Grunge
         if (grunge) {
+            /*
             console.log(grunge);
             console.log(0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2));
             console.log(left, top, right - left, settings.heightGroup - (padding * 2));
+            */
             ctx.drawImage(grunge,
                 0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
                 left, top, right - left, settings.heightGroup - (padding * 2)
@@ -259,32 +256,45 @@ const draw = {
             )
         }
         let grunge = false;
+        ctx.fillStyle = el.color;
+        ctx.lineWidth = 1;
+
         // Farben festlegen
         if (data.selected && data.selected == el) {
             ctx.lineWidth = 2;
-            ctx.fillStyle = draw.selectedColor;
+            grunge = draw.imgGrungeBlack;
         } else if (data.selected && data.selected.children && data.selected.children.includes(el)) {
             ctx.lineWidth = 2;
-            ctx.fillStyle = draw.childColor;
-        } else {
-            ctx.lineWidth = 1;
-            ctx.fillStyle = el.color;
+            grunge = draw.imgGrungeGreen;
         }
-        ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
-
         ctx.fillRect(
             left,
             top,
             right - left,
             settings.heightSpecies - (padding * 2)
         )
+
+        ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.strokeRect(
-                left,
-                top,
-                right - left,
-                settings.heightSpecies - (padding * 2)
+            left,
+            top,
+            right - left,
+            settings.heightSpecies - (padding * 2)
+        )
+
+        // Grunge
+        if (grunge) {
+            /*
+            console.log(grunge);
+            console.log(0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2));
+            console.log(left, top, right - left, settings.heightGroup - (padding * 2));
+            */
+            ctx.drawImage(grunge,
+                0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
+                left, top, right - left, settings.heightGroup - (padding * 2)
             )
-            // draw.link(el, ctx, width, height, left, top + padding);
+        }
+        // draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 
@@ -342,7 +352,7 @@ const draw = {
                     true
                 )
                 ctx.lineTo(
-                    parentLeft - (kurvenradius / 2),
+                    parentLeft - draw.linkPadding- (kurvenradius),
                     top + paddingChild
                 );
                 ctx.lineTo(
@@ -417,13 +427,13 @@ const draw = {
         }
     },
     diagram() {
+        // console.time();
         let width = draw.cDiagram.width;
         let height = draw.cDiagram.height;
         let ctx = draw.cDiagram.getContext('2d');
         ctx.clearRect(0, 0, width, height);
 
         draw.scrollbar(ctx, width, height);
-
 
         // Gruppen und Spezies zeichnen
         data.baumToDraw.forEach(el => {
@@ -435,8 +445,9 @@ const draw = {
         // Linien auch außerhalb des Viewports zeichnen
         draw.allLinks(data.baum, ctx, width);
 
-
+        // console.timeEnd();        
     },
+
     loadImgs() {
         let imgs = [
             { key: 'imgGrungeRed', url: 'img/grunge_brown.png' },

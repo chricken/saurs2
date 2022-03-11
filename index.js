@@ -4,6 +4,7 @@ import data from './data.js';
 import dom from './dom.js';
 import win from './win.js';
 import draw from './draw.js';
+import ui from './ui.js'
 
 // VARIABLEN
 
@@ -19,7 +20,7 @@ const init = () => {
     ).then(
         () => data.update()
     ).then(
-        //() => console.log(draw)
+        () => ui.init()
     ).catch(
         console.warn
     )
