@@ -19,7 +19,7 @@ const init = () => {
     ).then(
         () => data.update()
     ).then(
-        () => console.log(draw)
+        //() => console.log(draw)
     ).catch(
         console.warn
     )

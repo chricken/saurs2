@@ -19,6 +19,7 @@ const draw = {
 
     imgGrungeRed: false,
     imgGrungeGreen: false,
+    imgGrungeBlack: false,
 
     hueGroup: {
         hueMin: 170,
@@ -185,20 +186,24 @@ const draw = {
                 settings.heightGroup
             )
         }
+        let grunge = false;
+        ctx.fillStyle = el.color;
 
         // Farben festlegen
         if (data.selected && data.selected == el) {
             ctx.lineWidth = 2;
-            ctx.fillStyle = draw.selectedColor;
+            //ctx.fillStyle = draw.selectedColor;
+            grunge = draw.imgGrungeBlack;
         } else if (data.selected && data.selected.children && data.selected.children.includes(el)) {
             ctx.lineWidth = 2;
-            ctx.fillStyle = draw.childColor;
+            //ctx.fillStyle = draw.childColor;
+            grunge = draw.imgGrungeGreen;
         } else if (data.selected && el.children.includes(data.selected)) {
             ctx.lineWidth = 2;
-            ctx.fillStyle = draw.parentColor;
+            //ctx.fillStyle = draw.parentColor;
+            grunge = draw.imgGrungeRed;
         } else {
             ctx.lineWidth = 1;
-            ctx.fillStyle = el.color;
         }
 
 
@@ -212,12 +217,24 @@ const draw = {
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.strokeRect(
-                left,
-                top,
-                right - left,
-                settings.heightGroup - (padding * 2)
+            left,
+            top,
+            right - left,
+            settings.heightGroup - (padding * 2)
+        )
+
+        // Grunge
+        if (grunge) {
+            console.log(grunge);
+            console.log(0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2));
+            console.log(left, top, right - left, settings.heightGroup - (padding * 2));
+            ctx.drawImage(grunge,
+                0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
+                left, top, right - left, settings.heightGroup - (padding * 2)
             )
-            //draw.link(el, ctx, width, height, left, top + padding);
+        }
+
+        //draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 
@@ -241,7 +258,7 @@ const draw = {
                 settings.heightGroup
             )
         }
-
+        let grunge = false;
         // Farben festlegen
         if (data.selected && data.selected == el) {
             ctx.lineWidth = 2;
@@ -423,6 +440,7 @@ const draw = {
     loadImgs() {
         let imgs = [
             { key: 'imgGrungeRed', url: 'img/grunge_brown.png' },
+            { key: 'imgGrungeBlack', url: 'img/grunge_black.png' },
             { key: 'imgGrungeGreen', url: 'img/grunge_green.png' }
         ]
         return Promise.all(
