@@ -9,29 +9,32 @@ const draw = {
     linkLeftStop: 0,
     scrollbarPadding: 10,
     mouseY: 0,
-    
+
     parentColor: 'hsla(0,100%,40%,1)',
-    childColor:'hsla(120,100%,40%,1)',
+    childColor: 'hsla(120,100%,40%,1)',
     parentLinkColor: 'hsla(0,100%,40%,.5)',
     linkColor: 'hsla(0,0%,0%,.5)',
     childLinkColor: 'hsla(120,100%,40%,.5)',
     selectedColor: 'hsla(0,0%,0%,1)',
 
-    hueGroup:{
+    imgGrungeRed: false,
+    imgGrungeGreen: false,
+
+    hueGroup: {
         hueMin: 170,
-        hueMax:190,
-        satMin:60,
-        satMax:80,
-        lightMin:30,
-        lightMax:40,
+        hueMax: 190,
+        satMin: 60,
+        satMax: 80,
+        lightMin: 30,
+        lightMax: 40,
     },
-    hueSpecies:{
+    hueSpecies: {
         hueMin: -10,
-        hueMax:10,
-        satMin:30,
-        satMax:40,
-        lightMin:50,
-        lightMax:50,
+        hueMax: 10,
+        satMin: 30,
+        satMax: 40,
+        lightMin: 50,
+        lightMax: 50,
     },
 
     selectedUnderlayColor: 'hsla(0,0%,0%,.3)',
@@ -138,8 +141,8 @@ const draw = {
         let padding = 5;
         let content = el.bez;
         if (el.children) content += ` (${el.numSpecies} ${data.lang['spezies'][settings.lang]})`
-        
-        if(el[settings.lang]) content += ` - ${el[settings.lang]}`;
+
+        if (el[settings.lang]) content += ` - ${el[settings.lang]}`;
 
         ctx.textAlign = 'left';
         ctx.font = `${fontSize}px oswald`;
@@ -209,12 +212,12 @@ const draw = {
 
         ctx.strokeStyle = 'hsla(0,0%,0%,.6)';
         ctx.strokeRect(
-            left,
-            top,
-            right - left,
-            settings.heightGroup - (padding * 2)
-        )
-        //draw.link(el, ctx, width, height, left, top + padding);
+                left,
+                top,
+                right - left,
+                settings.heightGroup - (padding * 2)
+            )
+            //draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 
@@ -259,12 +262,12 @@ const draw = {
             settings.heightSpecies - (padding * 2)
         )
         ctx.strokeRect(
-            left,
-            top,
-            right - left,
-            settings.heightSpecies - (padding * 2)
-        )
-        // draw.link(el, ctx, width, height, left, top + padding);
+                left,
+                top,
+                right - left,
+                settings.heightSpecies - (padding * 2)
+            )
+            // draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 
@@ -417,11 +420,26 @@ const draw = {
 
 
     },
+    loadImgs() {
+        let imgs = [
+            { key: 'imgGrungeRed', url: 'img/grunge_brown.png' },
+            { key: 'imgGrungeGreen', url: 'img/grunge_green.png' }
+        ]
+        return Promise.all(
+            imgs.map(img => new Promise(resolve => {
+                draw[img.key] = document.createElement('img');
+                draw[img.key].addEventListener('load', resolve);
+                draw[img.key].src = img.url
+            }))
+        )
+    },
     init() {
         return new Promise(resolve => {
             draw.cAges = dom.$('#cAges');
             draw.cDiagram = dom.$('#cDiagram');
-            resolve();
+            draw.loadImgs().then(
+                resolve
+            )
         })
     }
 }

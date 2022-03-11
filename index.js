@@ -18,6 +18,8 @@ const init = () => {
         () => draw.ages()
     ).then(
         () => data.update()
+    ).then(
+        () => console.log(draw)
     ).catch(
         console.warn
     )
