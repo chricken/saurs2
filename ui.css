@@ -1,26 +1,29 @@
 /*
 http://mfglabs.github.io/mfglabs-iconset/
 */
+
 :root {
     --grau: #888;
     --hellgrau: #aaa;
     --abstand: 3px;
-  }
+}
 
 #ui {
-    position:fixed;
+    position: fixed;
     background-color: #fff;
-
-    width:450px;
+    width: 450px;
 }
+
 #ui .title {
     background: var(--hellgrau);
     padding-left: var(--abstand);
+    cursor: pointer;
 }
+
 #uiTitle {
     position: relative;
     min-height: 30px;
-    padding:var(--abstand);
+    padding: var(--abstand);
     background-color: var(--grau);
     color: #fff;
 }
