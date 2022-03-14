@@ -207,11 +207,9 @@ const data = {
                 data.schema_rezent = res[5];
             }
         ).then(
-            () => data.baum = data.changeObjectToArray(data.baum)
+            () =>  data.baum = data.changeObjectToArray(data.baum)
         ).then(
             () => data.getLocations(data.baum)
-        ).then(
-            () => console.log(data.locations)
         ).then(
             () => data.sort(data.baum, 'mioJhrVon', false)
         ).then(
@@ -225,10 +223,10 @@ const data = {
         ).then(
             () => data.lowerEdge += (Math.max(settings.heightGroup, settings.heightSpecies))
         ).then(
-            () => data.insertParents(data.baum)
+            () =>  data.insertParents(data.baum)
         ).then(
             () => {
-                // console.log(data.baum)
+              //  console.log(data)
             }
         )
     }

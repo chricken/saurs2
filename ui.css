@@ -6,12 +6,21 @@ http://mfglabs.github.io/mfglabs-iconset/
     --grau: #888;
     --hellgrau: #aaa;
     --abstand: 3px;
+    --halbdurchsichtig: hsla(0, 0%, 0%, 0.5)
 }
-
+h1,h2,h3,h4,h5,h6 {
+    position: relative;
+    display: block;
+    font-weight: normal;
+    margin:0;
+}
+h4{
+    color: var(--halbdurchsichtig);
+}
 #ui {
     position: fixed;
     background-color: #fff;
-    width: 450px;
+    width: 300px;
 }
 
 #ui .title {
@@ -26,4 +35,19 @@ http://mfglabs.github.io/mfglabs-iconset/
     padding: var(--abstand);
     background-color: var(--grau);
     color: #fff;
+}
+.content {        
+    position: relative;
+    padding:var(--abstand);
+}
+.elTitle {
+    margin-bottom:10px;
+}
+
+.info .legende {
+    color: var(--halbdurchsichtig)
+}
+
+.info .legende:after {
+    content: ': ';
 }

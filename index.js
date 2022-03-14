@@ -16,7 +16,10 @@ const init = () => {
     ).then(
         data.init
     ).then(
-        () => draw.ages()
+        () => {
+            draw.ages()
+            console.log(data);
+        }
     ).then(
         () => data.update()
     ).then(
