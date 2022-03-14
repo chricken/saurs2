@@ -6,6 +6,7 @@ import draw from "./draw.js";
 const data = {
     // Teilbaum im sichtbaren Bereich
     baumToDraw: [],
+    locations: new Set(),
     lowerEdge: 0,
 
     // Zeitalter
@@ -153,6 +154,18 @@ const data = {
         })
     },
 
+    // Alle Fundorte in ein Array schreiben
+    getLocations(ast) {
+        ast.forEach(el => {
+            if (el.fundort) {
+                data.locations.add(...el.fundort.split(', '));
+            }
+            if (el.children) {
+                data.getLocations(el.children)
+            }
+        })
+    },
+
     // Spezies zählen
     countSpecies(ast, numSpecies) {
         let sumSpecies = 0;
@@ -196,7 +209,9 @@ const data = {
         ).then(
             () => data.baum = data.changeObjectToArray(data.baum)
         ).then(
-            () => true// data.sort(data.baum, 'bez', true)
+            () => data.getLocations(data.baum)
+        ).then(
+            () => console.log(data.locations)
         ).then(
             () => data.sort(data.baum, 'mioJhrVon', false)
         ).then(
