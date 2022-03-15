@@ -318,5 +318,13 @@
     "datenschutz": {
         "de": "Datenschutz",
         "en": "Privacy"
+    },
+    "byage": {
+        "de": "Nach Alter",
+        "en": "By Age"
+    },
+    "byname": {
+        "de": "Nach Bezeichnung",
+        "en": "By Naming"
     }
 }

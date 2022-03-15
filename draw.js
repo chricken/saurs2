@@ -305,7 +305,7 @@ const draw = {
 
         ast.forEach(el => {
             // console.log(el);
-            if (el.parent) {
+            if ((!el.filtered) && el.parent) {
                 let anfang = data.ages[0].von;
                 let padding = 1;
 

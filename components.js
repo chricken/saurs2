@@ -2,6 +2,7 @@ import ui from "./ui.js";
 import dom from './dom.js';
 import settings from "./settings.js";
 import data from "./data.js";
+import helpers from "./helpers.js";
 
 const components = {
 
@@ -153,8 +154,117 @@ const components = {
             // console.log(el.bez);
             components.ancestryChild(parent, el);
         })
-    }
+    },
 
+    searchResult(content, parent){
+        let container = dom.create({
+            parent,
+            content,
+            classes:['result']
+        })
+    },
+
+    search() {
+        
+        const handleInput = evt => {
+            const found = [];
+            const input = evt.target.value;
+            const checkNames = ast => {
+                ast.forEach(el => {
+                    
+                    if(el.bezLow.includes(input)) found.push(el);
+                    if(el.children) checkNames(el.children);
+                })
+            }
+
+            checkNames(data.baum);  
+
+            elResults.innerHTML = '';
+            found.forEach(el => {
+                                
+                components.searchResult(
+                    el.bez + (el[settings.lang] ? ` (${el[settings.lang]})` : ''),
+                    elResults
+                )
+            })
+
+            /*
+            console.clear();
+            console.log( found.map(el => el.bez).join(' ') )
+            */
+        }
+        
+        const parent = document.querySelector('#uiSuche .content');
+
+        const inputSearch = dom.create({
+            classes: ['input'],
+            parent
+        })
+
+        dom.create({
+            type: 'h5',
+            content: data.lang.byname[settings.lang],
+            parent: inputSearch
+        })
+
+        dom.create({
+            type:'input',
+            parent: inputSearch,
+            listeners: {
+                input:handleInput
+            }
+        })
+
+        const elResults = dom.create({
+            classes: ['results'],
+            parent: inputSearch
+        })
+
+    },
+
+    filter() {
+        const parent = document.querySelector('#uiFilter .content');
+        
+        // Filter nach Mio Jahren
+        const handleInput = (evt, changeThis) => {
+            let target = evt.target;
+            let value = helpers.crop(Number(target.value), 0, data.earliestAge);
+            data[changeThis] = value;
+            target.value = value;
+            // console.log(data.filterMinAge, data.filterMaxAge);
+            data.update();
+        }
+
+        const inputsMioJhrs = dom.create({
+            classes: ['inputs spalten2'],
+            parent
+        })
+
+
+        dom.create({
+            type: 'h5',
+            content: data.lang.byage[settings.lang],
+            parent: inputsMioJhrs
+        })
+
+        dom.create({
+            type: 'input',
+            parent: inputsMioJhrs,
+            attr: { value: data.earliestAge },
+            listeners: {
+                input(evt) { handleInput(evt, 'filterMaxAge') }
+            }
+        })
+
+        dom.create({
+            type: 'input',
+            parent: inputsMioJhrs,
+            attr: { value: 0 },
+            listeners: {
+                input(evt) { handleInput(evt, 'filterMinAge') }
+            }
+        })
+    }
 }
 
 export default components;

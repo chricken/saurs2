@@ -9,6 +9,9 @@ const data = {
     ancestry: [],
     locations: new Set(),
     lowerEdge: 0,
+    earliestAge: 358,
+    filterMinAge: 0,
+    filterMaxAge: 358,
 
     // Zeitalter
     ages: [{
@@ -54,6 +57,18 @@ const data = {
         })
     },
 
+    // Um die Suche zu vereinfachen, wird hier der biologische, deutsche und englische Name in Kleinbuchstaben angehängt
+    addLowerCase(ast) {
+        
+        ast.forEach(el => {
+            el.bezLow = el.bez.toLowerCase();
+            el.deLow = el.de ? el.de.toLowerCase() : '';
+            el.enLow = el.en ? el.en.toLowerCase() : '';
+            if(el.children) data.addLowerCase(el.children)
+        })
+            
+    },
+
     // Ein neues Array anlegen, das nur die Spezies enthält, die im Viewport liegen
     fillBaumToDraw() {
         data.baumToDraw = [];
@@ -61,7 +76,11 @@ const data = {
             let padding = Math.max(settings.heightSpecies, settings.heightGroup);
             // console.log(el.pos, (win.scrollTop - padding), (win.scrollBottom + padding));
 
-            if (el.pos > (win.scrollTop - padding) && el.pos < (win.scrollBottom + padding)) {
+            if (
+                (!el.filtered)
+                && (el.pos > (win.scrollTop - padding))
+                && (el.pos < (win.scrollBottom + padding))
+            ) {
                 data.baumToDraw.push(el);
             }
             if (el.children) {
@@ -100,16 +119,18 @@ const data = {
     // Für alle Spezies und Gruppen die absolute Position (in px) ablegen
     calcPos(ast, pos) {
         ast.forEach(el => {
-            if (!el.children) {
-                // Wenn es eine Spezies ist
-                el.pos = pos;
-                pos += settings.heightSpecies;
-            } else {
-                // Wenn es eine Gruppe ist
-                el.pos = pos;
-                pos += settings.heightGroup;
-                if (!el.collapsed) {
-                    pos = data.calcPos(el.children, pos);
+            if (!el.filtered) {
+                if (!el.children) {
+                    // Wenn es eine Spezies ist
+                    el.pos = pos;
+                    pos += settings.heightSpecies;
+                } else {
+                    // Wenn es eine Gruppe ist
+                    el.pos = pos;
+                    pos += settings.heightGroup;
+                    if (!el.collapsed) {
+                        pos = data.calcPos(el.children, pos);
+                    }
                 }
             }
             data.lowerEdge = (pos > data.lowerEdge) ?
@@ -180,11 +201,31 @@ const data = {
         })
         return sumSpecies;
     },
-
+    filterByAge() {
+        const filter = ast => {
+            ast.forEach(el => {
+                if (el.mioJhrBis > data.filterMaxAge && el.mioJhrVon > data.filterMaxAge) el.filtered = true;
+                if (el.mioJhrBis < data.filterMinAge && el.mioJhrVon < data.filterMinAge) el.filtered = true;
+                if (el.children) filter(el.children);
+            })
+        }
+        filter(data.baum);
+    },
     // Baum aktualisieren
     update() {
+        // Filter zurücksetzen
+        const resetFilter = ast => {
+            ast.forEach(el => {
+                el.filtered = false;
+                if (el.children) resetFilter(el.children);
+            })
+        }
+        resetFilter(data.baum);
+        data.filterByAge();
+        data.calcPos(data.baum, 0);
         data.fillBaumToDraw();
         draw.diagram();
+        // console.log(data.baum);
     },
 
     init() {
@@ -210,6 +251,8 @@ const data = {
             }
         ).then(
             () => data.baum = data.changeObjectToArray(data.baum)
+        ).then(
+            () => data.addLowerCase(data.baum)
         ).then(
             () => data.getLocations(data.baum)
         ).then(
