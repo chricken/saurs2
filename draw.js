@@ -352,7 +352,7 @@ const draw = {
                     true
                 )
                 ctx.lineTo(
-                    parentLeft - draw.linkPadding- (kurvenradius),
+                    parentLeft - draw.linkPadding - (kurvenradius),
                     top + paddingChild
                 );
                 ctx.lineTo(
@@ -390,42 +390,6 @@ const draw = {
         }
     },
 
-    // Einen Link zeichnen. Wird z.Zt. nicht verwendet. 
-    // Mglw später wieder, falls die Starts und Ziele nur für sichtbare Elemente gezeichnet werden sollen
-    link(el, ctx, width, height, left, top) {
-        if (el.parent) {
-
-            let anfang = data.ages[0].von;
-            let parentLeft = width - (width / anfang * el.parent.mioJhrVon);
-            let parentTop = el.parent.pos - win.scrollTop;
-
-            // Settings
-            ctx.lineWidth = 1;
-            ctx.lineJoin = 'round';
-            ctx.strokeStyle = '#000';
-
-            // Linien zeichnen
-            ctx.beginPath();
-
-            ctx.moveTo(parentLeft, parentTop + 20);
-            ctx.lineTo(parentLeft - draw.linkPadding + 10, parentTop + 20);
-            ctx.lineTo(parentLeft - draw.linkPadding, parentTop + 30);
-            ctx.lineTo(parentLeft - (draw.linkPadding / 2), top + 10);
-            ctx.lineTo(left, top + 10);
-            ctx.stroke();
-
-            // Pfeil anhängen
-            ctx.fillStyle = '#000';
-            ctx.beginPath();
-            ctx.moveTo(left, top + 10);
-            ctx.lineTo(left - 5, top + 5);
-            ctx.lineTo(left - 5, top + 15);
-            ctx.lineTo(left, top + 10);
-            ctx.fill();
-
-            //console.log(left, parentLeft);
-        }
-    },
     diagram() {
         // console.time();
         let width = draw.cDiagram.width;

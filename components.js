@@ -40,7 +40,7 @@ const components = {
 
         let el = dom.create({
             parent,
-            classes: ['linkBtn']
+            classes: ['linkBtn', 'transit']
         })
 
         let elLink = dom.create({
@@ -51,7 +51,7 @@ const components = {
                 target: '_blank'
             },
             content,
-            classes: ['linkBtn']
+            classes: ['transit']
         })
 
         return el;
@@ -108,7 +108,7 @@ const components = {
 
         // Link-Buttons
         const elLinks = dom.create({
-            parent:ui.elDetails,
+            parent: ui.elDetails,
             classes: ['linkBtns']
         })
 
@@ -137,6 +137,23 @@ const components = {
         })
 
     },
+
+    ancestryChild(parent, child) {
+        const el = dom.create({
+            content: child.bez,
+            classes: ['ancestryChild'],
+            parent
+        })
+    },
+
+    ancestry() {
+        const parent = document.querySelector('#uiTree .content');
+        parent.innerHTML = '';
+        data.ancestry.forEach(el => {
+            // console.log(el.bez);
+            components.ancestryChild(parent, el);
+        })
+    }
 
 }
 

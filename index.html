@@ -16,33 +16,48 @@
     <canvas id="cDiagram"></canvas>
     <div id="ui" class="shadow">
         <div id="uiTitle">
-            <div id="uiIcons">
-                <i class="icon-magnifying " aria-hidden="true"></i>
-                <i class="icon-white_question " aria-hidden="true"></i>
-                <i class="icon-spread " aria-hidden="true"></i>
-                <i class="icon-spread " aria-hidden="true"></i>
-                <i class="icon-settings " aria-hidden="true"></i>
+            <div class="closer">
+                <i class="icon-cross_mark" aria-hidden="true"></i>
             </div>
         </div>
 
         <div id="uiSuche">
-            <div class="title">Suche</div>            
-        </div>
-        <div is="uiFilter">
-            <div class="title">Filter</div>
-        </div>
-        <div id="uiTree">
-            <div class="title">Baum</div>            
-        </div>
-        <div id="uiDetails">
-            <div class="title">Details</div>
+            <div class="title">
+                <i class="icon-magnifying" aria-hidden="true"></i> Suche
+            </div>
             <div class="content"></div>
         </div>
+
+        <div id="uiFilter">
+            <div class="title">
+                <i class="icon-white_question" aria-hidden="true"></i> Filter
+            </div>
+            <div class="content"></div>
+        </div>
+
+        <div id="uiTree" class="active">
+            <div class="title">
+                <i class="icon-link" aria-hidden="true"></i> Abstammung
+            </div>
+            <div class="content"></div>
+        </div>
+
+        <div id="uiDetails" class="active">
+            <div class="title">
+                <i class="icon-spread" aria-hidden="true"></i> Details
+            </div>
+            <div class="content"></div>
+        </div>
+
         <div id="settings">
-            <div class="title">Settings</div>
+            <div class="title">
+                <i class="icon-settings" aria-hidden="true"></i> Settings
+            </div>
+            <div class="content"></div>
 
         </div>
     </div>
+
 </body>
 
 </html>

@@ -4,7 +4,7 @@ import components from './components.js';
 const ui = {
     isHolding: false,
     clickMousePos: [0, 0],
-    pos: [0, 0],
+    //pos: [0, 0],
     offset: [0, 0],
     hold(evt) {
         ui.isHolding = true;
@@ -23,8 +23,18 @@ const ui = {
             ui.el.style.top = evt.pageY + ui.offset[1] + 'px';
         }
     },
-    updateDetails(){
+    updateAncestry() {
+        data.ancestry = [];
+        const getNextAncestry = el => {
+            data.ancestry.push(el);
+            if (el.parent) getNextAncestry(el.parent)
+        }
+        getNextAncestry(data.selected);
+        components.ancestry();
+    },
+    updateDetails() {
         components.details(data.selected);
+        ui.updateAncestry();
     },
     init() {
         return new Promise(resolve => {
@@ -32,7 +42,7 @@ const ui = {
             ui.elTitle = document.querySelector('#uiTitle');
             ui.elDetails = document.querySelector('#uiDetails .content');
 
-            ui.pos = [ui.el.offsetLeft, ui.el.offsetTop];
+            //ui.pos = [ui.el.offsetLeft, ui.el.offsetTop];
 
             // Eventlisteners
             ui.elTitle.addEventListener('mousedown', ui.hold);

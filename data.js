@@ -6,6 +6,7 @@ import draw from "./draw.js";
 const data = {
     // Teilbaum im sichtbaren Bereich
     baumToDraw: [],
+    ancestry: [],
     locations: new Set(),
     lowerEdge: 0,
 
@@ -164,6 +165,7 @@ const data = {
                 data.getLocations(el.children)
             }
         })
+
     },
 
     // Spezies zählen
@@ -207,7 +209,7 @@ const data = {
                 data.schema_rezent = res[5];
             }
         ).then(
-            () =>  data.baum = data.changeObjectToArray(data.baum)
+            () => data.baum = data.changeObjectToArray(data.baum)
         ).then(
             () => data.getLocations(data.baum)
         ).then(
@@ -223,10 +225,10 @@ const data = {
         ).then(
             () => data.lowerEdge += (Math.max(settings.heightGroup, settings.heightSpecies))
         ).then(
-            () =>  data.insertParents(data.baum)
+            () => data.insertParents(data.baum)
         ).then(
             () => {
-              //  console.log(data)
+                //console.log([...data.locations].join());
             }
         )
     }

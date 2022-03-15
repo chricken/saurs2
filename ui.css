@@ -5,28 +5,33 @@ http://mfglabs.github.io/mfglabs-iconset/
 :root {
     --grau: #888;
     --hellgrau: #aaa;
+    --dunkelgrau: #555;
     --abstand: 3px;
-    --halbdurchsichtig: hsla(0, 0%, 0%, 0.5)
+    --abstandMittel: 10px;
+    --halbdurchsichtig: hsla(0, 0%, 0%, 0.5);
+    --hover: #ff0;
 }
-h1,h2,h3,h4,h5,h6 {
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     position: relative;
     display: block;
     font-weight: normal;
-    margin:0;
+    margin: 0;
 }
-h4{
+
+h4 {
     color: var(--halbdurchsichtig);
 }
+
 #ui {
     position: fixed;
     background-color: #fff;
     width: 300px;
-}
-
-#ui .title {
-    background: var(--hellgrau);
-    padding-left: var(--abstand);
-    cursor: pointer;
 }
 
 #uiTitle {
@@ -36,13 +41,6 @@ h4{
     background-color: var(--grau);
     color: #fff;
 }
-.content {        
-    position: relative;
-    padding:var(--abstand);
-}
-.elTitle {
-    margin-bottom:10px;
-}
 
 .info .legende {
     color: var(--halbdurchsichtig)
@@ -50,4 +48,97 @@ h4{
 
 .info .legende:after {
     content: ': ';
+}
+
+.elTitle {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+
+/* BUTTONS */
+
+.closer {
+    position: absolute;
+    right: var(--abstandMittel);
+}
+
+
+/* TITLE */
+
+#ui .title {
+    background: var(--hellgrau);
+    padding-left: var(--abstand);
+    cursor: pointer;
+}
+
+#ui .active .title {
+    background-color: var(--dunkelgrau);
+    color: #fff;
+}
+
+
+/* CONTENT */
+
+.content {
+    position: relative;
+    display: none;
+    padding: var(--abstand);
+}
+
+.active .content {
+    display: block;
+}
+
+
+/* DETAILS */
+
+.linkBtns {
+    position: relative;
+}
+
+.linkBtns .linkBtn {
+    position: relative;
+    display: inline-block;
+    background-color: var(--grau);
+    padding: var(--abstand);
+    width: 137px;
+    margin: 2px;
+    border-radius: 2px;
+}
+
+.linkBtns .linkBtn:hover {
+    background-color: var(--dunkelgrau);
+}
+
+.linkBtns .linkBtn a {
+    position: relative;
+    display: block;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.linkBtns .linkBtn:hover a {
+    color: var(--hover);
+    text-decoration: none
+}
+
+
+/* Ancestry */
+
+.ancestryChild {
+    position: relative;
+    display: inline-block;
+    font-size: 12px;
+    margin: 0;
+    line-height: auto;
+}
+
+.ancestryChild:not(:last-child)::after {
+    position: relative;
+    display: inline-block;
+    content: '>';
+    padding-left: var(--abstand);
+    padding-right: var(--abstand);
 }
