@@ -3,6 +3,7 @@ import dom from './dom.js';
 import settings from "./settings.js";
 import data from "./data.js";
 import helpers from "./helpers.js";
+import win from "./win.js";
 
 const components = {
 
@@ -142,8 +143,15 @@ const components = {
     ancestryChild(parent, child) {
         const el = dom.create({
             content: child.bez,
-            classes: ['ancestryChild'],
-            parent
+            classes: ['ancestryChild transit'],
+            parent,
+            listeners: {
+                click() {
+                    data.selected = child;
+                    win.scrollToEl(child);
+                    ui.updateDetails();
+                }
+            }
         })
     },
 
@@ -156,34 +164,39 @@ const components = {
         })
     },
 
-    searchResult(content, parent){
+    searchResult(el, parent) {
         let container = dom.create({
             parent,
-            content,
-            classes:['result']
+            content: el.bez + (el[settings.lang] ? ` (${el[settings.lang]})` : ''),
+            classes: ['result transit'],
+            listeners: {
+                click() {
+                    win.scrollToEl(el);
+                    ui.updateDetails();
+                }
+            }
         })
     },
 
     search() {
-        
+
         const handleInput = evt => {
             const found = [];
             const input = evt.target.value;
             const checkNames = ast => {
                 ast.forEach(el => {
-                    
-                    if(el.bezLow.includes(input)) found.push(el);
-                    if(el.children) checkNames(el.children);
+                    if (el.bezLow.includes(input)) found.push(el);
+                    if (el.children) checkNames(el.children);
                 })
             }
 
-            checkNames(data.baum);  
+            checkNames(data.baum);
 
             elResults.innerHTML = '';
             found.forEach(el => {
-                                
                 components.searchResult(
-                    el.bez + (el[settings.lang] ? ` (${el[settings.lang]})` : ''),
+                    el,
+
                     elResults
                 )
             })
@@ -193,7 +206,7 @@ const components = {
             console.log( found.map(el => el.bez).join(' ') )
             */
         }
-        
+
         const parent = document.querySelector('#uiSuche .content');
 
         const inputSearch = dom.create({
@@ -208,10 +221,10 @@ const components = {
         })
 
         dom.create({
-            type:'input',
+            type: 'input',
             parent: inputSearch,
             listeners: {
-                input:handleInput
+                input: handleInput
             }
         })
 
@@ -224,7 +237,7 @@ const components = {
 
     filter() {
         const parent = document.querySelector('#uiFilter .content');
-        
+
         // Filter nach Mio Jahren
         const handleInput = (evt, changeThis) => {
             let target = evt.target;

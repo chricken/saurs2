@@ -4,7 +4,7 @@ http://mfglabs.github.io/mfglabs-iconset/
 
 :root {
     --grau: #888;
-    --hellgrau: #aaa;
+    --hellgrau: #ccc;
     --dunkelgrau: #555;
     --abstand: 3px;
     --abstandMittel: 10px;
@@ -124,23 +124,37 @@ h4 {
     text-decoration: none
 }
 
+
 /* Inputs */
-.spalten2 input{
+
+.spalten2 input {
     position: relative;
     display: inline-block;
-    width:45% ;
+    width: 45%;
 }
+
 .spalten2 input:first-child {
     margin-right: var(--abstand);
 }
 
+
 /* Ancestry */
+
 .ancestryChild {
     position: relative;
     display: inline-block;
     font-size: 12px;
     margin: 0;
+    margin-right: 2px;
+    padding: var(--abstand);
+    background-color: var(--hellgrau);
     line-height: auto;
+    cursor: pointer;
+    border-radius: 2px;
+}
+
+.ancestryChild:hover {
+    background-color: var(--grau);
 }
 
 .ancestryChild:not(:last-child)::after {
@@ -149,4 +163,22 @@ h4 {
     content: '>';
     padding-left: var(--abstand);
     padding-right: var(--abstand);
+}
+
+
+/* Results */
+
+.results {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.result {
+    cursor: pointer;
+    color: var(--dunkelgrau);
+}
+
+.result:hover {
+    color: #000;
+    background-color: var(--hellgrau);
 }

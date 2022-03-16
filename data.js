@@ -59,14 +59,14 @@ const data = {
 
     // Um die Suche zu vereinfachen, wird hier der biologische, deutsche und englische Name in Kleinbuchstaben angehängt
     addLowerCase(ast) {
-        
+
         ast.forEach(el => {
             el.bezLow = el.bez.toLowerCase();
             el.deLow = el.de ? el.de.toLowerCase() : '';
             el.enLow = el.en ? el.en.toLowerCase() : '';
-            if(el.children) data.addLowerCase(el.children)
+            if (el.children) data.addLowerCase(el.children)
         })
-            
+
     },
 
     // Ein neues Array anlegen, das nur die Spezies enthält, die im Viewport liegen
@@ -77,9 +77,9 @@ const data = {
             // console.log(el.pos, (win.scrollTop - padding), (win.scrollBottom + padding));
 
             if (
-                (!el.filtered)
-                && (el.pos > (win.scrollTop - padding))
-                && (el.pos < (win.scrollBottom + padding))
+                (!el.filtered) &&
+                (el.pos > (win.scrollTop - padding)) &&
+                (el.pos < (win.scrollBottom + padding))
             ) {
                 data.baumToDraw.push(el);
             }
@@ -138,9 +138,23 @@ const data = {
                 data.lowerEdge;
         })
 
+
+
         return pos;
     },
+    calcLowerEdge() {
+        data.lowerEdge = 0;
+        const calc = el => {
+            if (!el.filtered) {
+                data.lowerEdge += el.children ? settings.heightGroup : settings.heightSpecies;
+                if (el.children) el.children.forEach(calc);
+            }
+        }
+        data.baum.forEach(calc);
+        // data.lowerEdge += 1000;
+        console.log(data.lowerEdge);
 
+    },
     insertParents(ast) {
         ast.forEach(el => {
             if (el.children) {
@@ -223,6 +237,7 @@ const data = {
         resetFilter(data.baum);
         data.filterByAge();
         data.calcPos(data.baum, 0);
+        data.calcLowerEdge();
         data.fillBaumToDraw();
         draw.diagram();
         // console.log(data.baum);
@@ -266,7 +281,7 @@ const data = {
         ).then(
             () => data.calcPos(data.baum, 0)
         ).then(
-            () => data.lowerEdge += (Math.max(settings.heightGroup, settings.heightSpecies))
+            () => data.calcLowerEdge()
         ).then(
             () => data.insertParents(data.baum)
         ).then(

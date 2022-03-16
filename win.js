@@ -54,10 +54,10 @@ const win = {
         let barWidth = width * .01;
 
         if (
-            evt.layerX > padding
-            && evt.layerX < padding + barWidth
-            && evt.layerY > padding
-            && evt.layerY < bottom
+            evt.layerX > padding &&
+            evt.layerX < padding + barWidth &&
+            evt.layerY > padding &&
+            evt.layerY < bottom
         ) {
             win.scrollTo(evt);
             win.scrollbarSelected = true;
@@ -67,10 +67,15 @@ const win = {
                 let pos = el.pos - win.scrollTop;
                 return (evt.layerY > pos) && (evt.layerY < pos + h);
             })
-            if(data.selected) ui.updateDetails();
+            if (data.selected) ui.updateDetails();
             // console.log(data.selected);
         }
         draw.diagram();
+    },
+    scrollToEl(el) {
+        data.selected = el;
+        win.scrollTop = el.pos;
+        win.handleScroll();
     },
     scrollTo(evt) {
         let width = draw.cDiagram.width;
@@ -84,7 +89,7 @@ const win = {
         let pos = (evt.layerY - padding) / barHeight;
         // console.log(pos * data.lowerEdge);
         win.scrollTop = helpers.crop((pos * data.lowerEdge), 0, data.lowerEdge - draw.cDiagram.height);
-        
+
         win.handleScroll();
     },
     leaveMouse(evt) {
@@ -105,8 +110,8 @@ const win = {
         return new Promise(resolve => {
             window.addEventListener('resize', win.handleResize);
             window.addEventListener('scroll', win.handleScroll);
-            window.addEventListener('wheel', win.handleWheel);
-            
+            draw.cDiagram.addEventListener('wheel', win.handleWheel);
+
             draw.cDiagram.addEventListener('mousedown', win.markSelected);
             draw.cDiagram.addEventListener('mouseup', win.leaveMouse);
             draw.cDiagram.addEventListener('mousemove', win.handleMove);
