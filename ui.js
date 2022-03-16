@@ -1,5 +1,7 @@
 import data from './data.js';
 import components from './components.js';
+import helpers from './helpers.js';
+import settings from './settings.js';
 
 const ui = {
     isHolding: false,
@@ -22,8 +24,13 @@ const ui = {
     move(evt) {
         // console.log(ui.hold);
         if (ui.isHolding) {
-            ui.el.style.left = evt.pageX + ui.offset[0] + 'px';
-            ui.el.style.top = evt.pageY + ui.offset[1] + 'px';
+            let left = evt.pageX + ui.offset[0];
+            let top = evt.pageY + ui.offset[1];
+            left = helpers.crop(left, 0, window.innerWidth - ui.el.offsetWidth);
+            top = helpers.crop(top, 0, window.innerHeight - ui.el.offsetHeight);
+            // console.log(left, top);
+            ui.el.style.left = left + 'px';
+            ui.el.style.top = top + 'px';
         }
     },
 
@@ -59,6 +66,24 @@ const ui = {
         components.details(data.selected);
         ui.updateAncestry();
     },
+    translateTitles() {
+        const titles = [...document.querySelectorAll('#ui .title')];
+        //console.log(titles);
+        titles.forEach(el => {
+            let translateFrom = el.querySelector('.translateFrom');
+            let translateTo = el.querySelector('.translateTo');
+
+            translateTo.innerHTML = data.lang[translateFrom.innerHTML][settings.lang];
+        })
+
+    },
+    updateUI() {
+        ui.translateTitles();
+        components.filter();
+        components.search();
+        components.settings();
+
+    },
 
     init() {
         return new Promise(resolve => {
@@ -75,8 +100,7 @@ const ui = {
             document.body.addEventListener('mousemove', ui.move);
 
             ui.makeTitlesActive();
-            components.filter();
-            components.search();
+            ui.updateUI();
         })
     }
 }

@@ -326,5 +326,9 @@
     "byname": {
         "de": "Nach Bezeichnung",
         "en": "By Naming"
+    },
+    "filter": {
+        "de": "Filter",
+        "en": "Filter"
     }
 }

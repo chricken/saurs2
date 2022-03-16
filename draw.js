@@ -284,17 +284,11 @@ const draw = {
 
         // Grunge
         if (grunge) {
-            /*
-            console.log(grunge);
-            console.log(0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2));
-            console.log(left, top, right - left, settings.heightGroup - (padding * 2));
-            */
             ctx.drawImage(grunge,
                 0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
                 left, top, right - left, settings.heightGroup - (padding * 2)
             )
         }
-        // draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
     },
 

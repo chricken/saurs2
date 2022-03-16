@@ -152,7 +152,7 @@ const data = {
         }
         data.baum.forEach(calc);
         // data.lowerEdge += 1000;
-        console.log(data.lowerEdge);
+        //console.log(data.lowerEdge);
 
     },
     insertParents(ast) {
@@ -181,10 +181,26 @@ const data = {
     colorize(ast) {
         ast.forEach(el => {
             if (el.children) {
-                el.color = helpers.createColor(draw.hueGroup);
+                //el.color = helpers.createColor(draw.hueGroup);
+                el.color = helpers.createColor({
+                    hueMin:160,
+                    hueMax:320,
+                    satMin:50,
+                    satMax:50,
+                    lightMin:20,
+                    lightMax:30
+                });
                 data.colorize(el.children)
             } else {
-                el.color = helpers.createColor(draw.hueSpecies);
+                // el.color = helpers.createColor(draw.hueSpecies);
+                el.color = helpers.createColor({
+                    hueMin:160,
+                    hueMax:320,
+                    satMin:50,
+                    satMax:50,
+                    lightMin:70,
+                    lightMax:80
+                });
 
             }
         })

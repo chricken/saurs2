@@ -4,8 +4,32 @@ import settings from "./settings.js";
 import data from "./data.js";
 import helpers from "./helpers.js";
 import win from "./win.js";
+import draw from "./draw.js";
 
 const components = {
+
+    comparisons: [
+        {
+            length: .05,
+            img: './img/schema/schmetterling.png'
+        },
+        {
+            length: .55,
+            img: './img/schema/kaninchen.png'
+        },
+        {
+            length: 1.8,
+            img: './img/schema/mensch.png'
+        },
+        {
+            length: 6,
+            img: './img/schema/elefant.png'
+        },
+        {
+            length: 16,
+            img: './img/schema/pottwal.png'
+        }
+    ],
 
     info({
         content = false,
@@ -59,6 +83,38 @@ const components = {
         return el;
     },
 
+    // Icons, um bspw Lebensraum oder Nahrung zu zeigen
+    infoIconset(attrName) {
+        if (data.selected[attrName]) {
+            const parent = dom.create({
+                classes: [`${attrName} info`],
+                parent: ui.elDetails
+            })
+
+            dom.create({
+                parent,
+                classes: ['legende'],
+                content: data.lang[attrName][settings.lang],
+                type: 'span'
+            })
+
+            // Mögliche Lebensräume filtern und iterieren
+            Object.entries(data.selected[attrName])
+                .filter(el => el[1])
+                .map(el => el[0])
+                .forEach(el => {
+                    dom.create({
+                        parent,
+                        type: 'img',
+                        attr: {
+                            src: `./img/${data.icons[el]}.png`
+                        },
+                        classes: ['infoIcon']
+                    })
+                })
+        }
+    },
+
     details(ast) {
         ui.elDetails.innerHTML = '';
 
@@ -101,12 +157,53 @@ const components = {
                 legende: data.lang.fundort[settings.lang]
             })
 
-        if (ast.laenge)
-            components.info({
+        if (ast.laenge) {
+            let parent = components.info({
                 parent: ui.elDetails,
-                content: `${ast.laenge} ${data.lang.meter[settings.lang]}`,
+                content: false,
                 legende: data.lang.laenge[settings.lang]
             })
+
+            let comparison = false;
+            components.comparisons.forEach(el => {
+                if (el.length < ast.laenge) comparison = el.img;
+            })
+
+            // Lebende Art zum Vergleich
+            parent.style.height = '100px';
+            dom.create({
+                type: 'img',
+                parent: parent.querySelector('.text'),
+                attr: {
+                    src: comparison
+                },
+                classes: ['lengthIcon recent']
+            })
+            //console.log(ast);
+            // Ausgestorbene Art
+            let typ = Object.entries(ast.typ).find(el => el[1])[0];
+            console.log(typ);
+            dom.create({
+                type: 'img',
+                parent: parent.querySelector('.text'),
+                attr: {
+                    src: `./img/schema/${typ}.png`
+                },
+                classes: ['lengthIcon dino']
+            })
+        }
+        // Lebensraum
+        components.infoIconset('lebensraum');
+
+        // Nahrung
+        components.infoIconset('nahrung')
+
+        // Schmuck
+        components.infoIconset('schmuck');
+
+
+
+        console.log(data.selected);
 
         // Link-Buttons
         const elLinks = dom.create({
@@ -158,7 +255,7 @@ const components = {
     ancestry() {
         const parent = document.querySelector('#uiTree .content');
         parent.innerHTML = '';
-        data.ancestry.forEach(el => {
+        data.ancestry.reverse().forEach(el => {
             // console.log(el.bez);
             components.ancestryChild(parent, el);
         })
@@ -179,13 +276,16 @@ const components = {
     },
 
     search() {
-
+        // Callback-Funktion
         const handleInput = evt => {
             const found = [];
             const input = evt.target.value;
             const checkNames = ast => {
                 ast.forEach(el => {
-                    if (el.bezLow.includes(input)) found.push(el);
+                    if (
+                        el.bezLow.includes(input)
+                        || el[`${settings.lang}Low`].includes(input)
+                    ) found.push(el);
                     if (el.children) checkNames(el.children);
                 })
             }
@@ -196,19 +296,17 @@ const components = {
             found.forEach(el => {
                 components.searchResult(
                     el,
-
                     elResults
                 )
             })
-
-            /*
-            console.clear();
-            console.log( found.map(el => el.bez).join(' ') )
-            */
         }
 
-        const parent = document.querySelector('#uiSuche .content');
 
+        // Eltern-Element suchen und leeren
+        const parent = document.querySelector('#uiSuche .content');
+        parent.innerHTML = parent.innerHTML = '';
+
+        // DOM-Aufbau
         const inputSearch = dom.create({
             classes: ['input'],
             parent
@@ -235,9 +333,67 @@ const components = {
 
     },
 
-    filter() {
-        const parent = document.querySelector('#uiFilter .content');
+    settings() {
+        // Eltern-Element suchen und leeren
+        const parent = document.querySelector('#uiSettings .content');
 
+        parent.innerHTML = parent.innerHTML = '';
+
+        // Callback-Funktion
+        const handleChange = evt => {
+            settings.lang = sel.value;
+            ui.updateUI();
+            data.update();
+        }
+
+        // DOM-Aufbau
+        const elSprache = dom.create({
+            parent,
+            classes: ['inputs']
+        })
+
+        dom.create({
+            type: 'h5',
+            content: data.lang.sprache[settings.lang],
+            parent: elSprache
+        })
+
+        const sel = dom.create({
+            type: 'select',
+            parent: elSprache,
+            listeners: {
+                change: handleChange
+            }
+        })
+
+        dom.create({
+            type: 'option',
+            content: 'Deutsch',
+            attr: {
+                value: 'de'
+            },
+            parent: sel
+        })
+
+        dom.create({
+            type: 'option',
+            content: 'English',
+            attr: {
+                value: 'en'
+            },
+            parent: sel
+        })
+        sel.value = settings.lang;
+
+
+    },
+
+    filter() {
+        // Eltern-Element suchen und leeren
+        const parent = document.querySelector('#uiFilter .content');
+        parent.innerHTML = parent.innerHTML = '';
+
+        // Callback-Funktion
         // Filter nach Mio Jahren
         const handleInput = (evt, changeThis) => {
             let target = evt.target;
@@ -248,6 +404,7 @@ const components = {
             data.update();
         }
 
+        // DOM-Aufbau
         const inputsMioJhrs = dom.create({
             classes: ['inputs spalten2'],
             parent
