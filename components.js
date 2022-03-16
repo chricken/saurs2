@@ -8,8 +8,7 @@ import draw from "./draw.js";
 
 const components = {
 
-    comparisons: [
-        {
+    /* comparisons: [{
             length: .05,
             img: './img/schema/schmetterling.png'
         },
@@ -30,6 +29,12 @@ const components = {
             img: './img/schema/pottwal.png'
         }
     ],
+*/
+
+    legal() {
+        ui.elLegal.innerHTML = data[`legal_${settings.lang}`];
+
+    },
 
     info({
         content = false,
@@ -136,6 +141,7 @@ const components = {
                 content: ast[settings.lang]
             })
 
+        // Lebenszeitraum
         if (ast.mioJhrVon)
             components.info({
                 parent: ui.elDetails,
@@ -150,6 +156,7 @@ const components = {
                 legende: `${data.lang.mioJhrBis[settings.lang]}`
             })
 
+        // Fundort
         if (ast.fundort)
             components.info({
                 parent: ui.elDetails,
@@ -157,32 +164,51 @@ const components = {
                 legende: data.lang.fundort[settings.lang]
             })
 
+        // Gewicht
+        if (ast.gewicht)
+            components.info({
+                parent: ui.elDetails,
+                content: `${ast.gewicht} kg`,
+                legende: data.lang.gewicht[settings.lang]
+            })
+
+        // Längenübersicht
         if (ast.laenge) {
             let parent = components.info({
                 parent: ui.elDetails,
-                content: false,
                 legende: data.lang.laenge[settings.lang]
+            })
+            dom.create({
+                parent,
+                content: `${ast.laenge} ${data.lang.meter[settings.lang]}`,
+                classes: ['value'],
+                type: 'span'
             })
 
             let comparison = false;
-            components.comparisons.forEach(el => {
-                if (el.length < ast.laenge) comparison = el.img;
+            data.schema_rezent.forEach(el => {
+                if (el.laenge < ast.laenge) comparison = el;
             })
 
             // Lebende Art zum Vergleich
+            let scale = comparison.laenge / ast.laenge;
+            console.log(scale);
             parent.style.height = '100px';
             dom.create({
                 type: 'img',
                 parent: parent.querySelector('.text'),
                 attr: {
-                    src: comparison
+                    src: `./img/schema/${comparison.url}`
+                },
+                styles: {
+                    transform: `scale(${scale})`
                 },
                 classes: ['lengthIcon recent']
             })
-            //console.log(ast);
+
             // Ausgestorbene Art
             let typ = Object.entries(ast.typ).find(el => el[1])[0];
-            console.log(typ);
+
             dom.create({
                 type: 'img',
                 parent: parent.querySelector('.text'),
@@ -192,6 +218,7 @@ const components = {
                 classes: ['lengthIcon dino']
             })
         }
+
         // Lebensraum
         components.infoIconset('lebensraum');
 
@@ -201,9 +228,6 @@ const components = {
         // Schmuck
         components.infoIconset('schmuck');
 
-
-
-        console.log(data.selected);
 
         // Link-Buttons
         const elLinks = dom.create({
@@ -283,8 +307,8 @@ const components = {
             const checkNames = ast => {
                 ast.forEach(el => {
                     if (
-                        el.bezLow.includes(input)
-                        || el[`${settings.lang}Low`].includes(input)
+                        el.bezLow.includes(input) ||
+                        el[`${settings.lang}Low`].includes(input)
                     ) found.push(el);
                     if (el.children) checkNames(el.children);
                 })

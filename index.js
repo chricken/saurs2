@@ -15,9 +15,11 @@ const init = () => {
     ).then(
         data.init
     ).then(
+        () => win.handleResize()
+    ).then(
         () => {
             draw.ages()
-           // console.log(data);
+                // console.log(data);
         }
     ).then(
         () => data.update()

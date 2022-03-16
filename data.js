@@ -183,23 +183,23 @@ const data = {
             if (el.children) {
                 //el.color = helpers.createColor(draw.hueGroup);
                 el.color = helpers.createColor({
-                    hueMin:160,
-                    hueMax:320,
-                    satMin:50,
-                    satMax:50,
-                    lightMin:20,
-                    lightMax:30
+                    hueMin: 160,
+                    hueMax: 320,
+                    satMin: 50,
+                    satMax: 50,
+                    lightMin: 20,
+                    lightMax: 30
                 });
                 data.colorize(el.children)
             } else {
                 // el.color = helpers.createColor(draw.hueSpecies);
                 el.color = helpers.createColor({
-                    hueMin:160,
-                    hueMax:320,
-                    satMin:50,
-                    satMax:50,
-                    lightMin:70,
-                    lightMax:80
+                    hueMin: 160,
+                    hueMax: 320,
+                    satMin: 50,
+                    satMax: 50,
+                    lightMin: 70,
+                    lightMax: 80
                 });
 
             }
@@ -266,7 +266,7 @@ const data = {
             fetch('data/lang.json'),
             fetch('data/icons.json'),
             fetch('data/schema_dino.json'),
-            fetch('data/schema_rezent.json')
+            fetch('data/schema_rezent.json'),
         ]).then(
             res => {
                 return Promise.all(res.map(el => el.json()));
@@ -279,6 +279,20 @@ const data = {
                 data.icons = res[3];
                 data.schema_dino = res[4];
                 data.schema_rezent = res[5];
+            }
+        ).then(
+            () => Promise.all([
+                fetch('data/legal_de.html'),
+                fetch('data/legal_en.html'),
+            ])
+        ).then(
+            res => {
+                return Promise.all(res.map(el => el.text()));
+            }
+        ).then(
+            res => {
+                data.legal_de = res[0];
+                data.legal_en = res[1];
             }
         ).then(
             () => data.baum = data.changeObjectToArray(data.baum)

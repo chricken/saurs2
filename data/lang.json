@@ -319,6 +319,10 @@
         "de": "Datenschutz",
         "en": "Privacy"
     },
+    "legal": {
+        "de": "Rechtliches",
+        "en": "Legal"
+    },
     "byage": {
         "de": "Nach Alter",
         "en": "By Age"

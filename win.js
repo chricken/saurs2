@@ -18,6 +18,7 @@ const win = {
         draw.cDiagram.height = window.innerHeight;
         draw.ages();
         draw.diagram();
+        dom.$('#ui .inner').style.maxHeight = `${draw.cDiagram.height * .8}px`;
     },
 
     // Auf ein System-Scroll reagieren. 
