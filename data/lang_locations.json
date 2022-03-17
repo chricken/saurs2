@@ -3,6 +3,10 @@
         "de": "Nordamerika",
         "en": "Northamerica"
     },
+    "usanord": {
+        "de": "USA (Nord)",
+        "en": "USA (North)"
+    },
     "usasued": {
         "de": "USA (Süd)",
         "en": "USA (South)"
@@ -10,6 +14,10 @@
     "usawest": {
         "de": "USA (West)",
         "en": "USA (West)"
+    },
+    "usaost": {
+        "de": "USA (Ost)",
+        "en": "USA (East)"
     },
     "alaska": {
         "de": "Alaska",
@@ -43,6 +51,10 @@
         "de": "Südamerika (Nord)",
         "en": "Southamerica (North)"
     },
+    "suedamerikawest": {
+        "de": "Südamerika (West)",
+        "en": "Southamerica (West)"
+    },
     "argentinien": {
         "de": "Argentinien",
         "en": "Argentina"
@@ -50,10 +62,6 @@
     "brasilien": {
         "de": "Brasilien",
         "en": "Brazil"
-    },
-    "china": {
-        "de": "China",
-        "en": "China"
     },
     "mongolei": {
         "de": "Mongolei",
@@ -63,17 +71,45 @@
         "de": "Wüste Gobi",
         "en": "Gobi Desert"
     },
+    "china": {
+        "de": "China",
+        "en": "China"
+    },
     "chinamitte": {
         "de": "China (Mitte)",
         "en": "China (Central)"
+    },
+    "chinaost": {
+        "de": "China (Ost)",
+        "en": "China (East)"
     },
     "chinawest": {
         "de": "China (West)",
         "en": "China (West)"
     },
+    "chinanord": {
+        "de": "China (Nord)",
+        "en": "China (North)"
+    },
+    "russland": {
+        "de": "Russland",
+        "en": "Russia"
+    },
+    "russlandnord": {
+        "de": "Nordrussland",
+        "en": "Northern Russia"
+    },
+    "russlandost": {
+        "de": "Ostrussland",
+        "en": "Eastern Russia"
+    },
     "indien": {
         "de": "Indien",
         "en": "India"
+    },
+    "asien": {
+        "de": "Asien",
+        "en": "Asia"
     },
     "asiensuedost": {
         "de": "Asien (Südost)",
@@ -98,6 +134,10 @@
     "japan": {
         "de": "Japan",
         "en": "Japan"
+    },
+    "afrika": {
+        "de": "Afrika",
+        "en": "Africa"
     },
     "afrikanord": {
         "de": "Afrika (Nord)",
@@ -127,8 +167,8 @@
         "de": "Europa",
         "en": "Europe"
     },
-    "europamittel": {
-        "de": "Europa (Mittel)",
+    "europamitte": {
+        "de": "Europa (Mitte)",
         "en": "Europe (Central)"
     },
     "europawest": {
@@ -151,6 +191,10 @@
         "de": "Europa (Süd)",
         "en": "Europe (South)"
     },
+    "uk": {
+        "de": "UK",
+        "en": "UK"
+    },
     "australien": {
         "de": "Australien",
         "en": "Australia"
@@ -166,6 +210,14 @@
     "neuseeland": {
         "de": "Neuseeland",
         "en": "New Zealand"
+    },
+    "sunda": {
+        "de": "Sunda-Inseln",
+        "en": "Sunda Islands"
+    },
+    "arabischehalbinsel": {
+        "de": "Arabien",
+        "en": "Arabia"
     },
     "groenland": {
         "de": "Groenland",

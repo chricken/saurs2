@@ -82,6 +82,7 @@ const ui = {
     },
     updateUI() {
         ui.translateTitles();
+        components.details(data.selected);
         components.filter();
         components.search();
         components.settings();

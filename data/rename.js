@@ -6,8 +6,8 @@ const fs = require('fs');
 let data = false;
 let locations = new Set();
 
-let suchen = ['Neixiang'];
-let ersetzen = 'chinamitte';
+let suchen = ['Indonesien'];
+let ersetzen = 'sunda';
 
 let count = 0;
 
@@ -19,19 +19,14 @@ const extractLocations = ast => {
 
             // Suchen und ersetzen
             suchen.forEach(suche => {
-
                 val.fundort = val.fundort.split(suche).join(ersetzen);
             })
 
             // Locations-Übersicht füllen
             val.fundort.split(', ').forEach(fundort => locations.add(fundort));
 
-            // Ausgabe
-            /*
-            console.log(key, count);
-            console.log(val.fundort);
-            console.log(' ');
-            */
+            // Dupletten entfernen
+            val.fundort = [...new Set(val.fundort.split(', '))].join(', ');
         }
         if (val.children) extractLocations(val.children);
     }

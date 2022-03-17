@@ -4,36 +4,11 @@ import settings from "./settings.js";
 import data from "./data.js";
 import helpers from "./helpers.js";
 import win from "./win.js";
-import draw from "./draw.js";
 
 const components = {
 
-    /* comparisons: [{
-            length: .05,
-            img: './img/schema/schmetterling.png'
-        },
-        {
-            length: .55,
-            img: './img/schema/kaninchen.png'
-        },
-        {
-            length: 1.8,
-            img: './img/schema/mensch.png'
-        },
-        {
-            length: 6,
-            img: './img/schema/elefant.png'
-        },
-        {
-            length: 16,
-            img: './img/schema/pottwal.png'
-        }
-    ],
-*/
-
     legal() {
         ui.elLegal.innerHTML = data[`legal_${settings.lang}`];
-
     },
 
     info({
@@ -121,144 +96,164 @@ const components = {
     },
 
     details(ast) {
-        ui.elDetails.innerHTML = '';
+        if (ast) {
+            ui.elDetails.innerHTML = '';
 
-        let parentTitle = dom.create({
-            parent: ui.elDetails,
-            classes: ['elTitle']
-        })
-
-        dom.create({
-            type: 'h3',
-            content: ast.bez,
-            parent: parentTitle
-        })
-
-        if (ast[settings.lang])
-            dom.create({
-                type: 'h4',
-                parent: parentTitle,
-                content: ast[settings.lang]
-            })
-
-        // Lebenszeitraum
-        if (ast.mioJhrVon)
-            components.info({
+            let parentTitle = dom.create({
                 parent: ui.elDetails,
-                content: `${ast.mioJhrVon} ${data.lang.mioJhr[settings.lang]}`,
-                legende: `${data.lang.mioJhrVon[settings.lang]}`
+                classes: ['elTitle']
             })
-
-        if (ast.mioJhrBis)
-            components.info({
-                parent: ui.elDetails,
-                content: `${ast.mioJhrBis} ${data.lang.mioJhr[settings.lang]}`,
-                legende: `${data.lang.mioJhrBis[settings.lang]}`
-            })
-
-        // Fundort
-        if (ast.fundort)
-            components.info({
-                parent: ui.elDetails,
-                content: ast.fundort,
-                legende: data.lang.fundort[settings.lang]
-            })
-
-        // Gewicht
-        if (ast.gewicht)
-            components.info({
-                parent: ui.elDetails,
-                content: `${ast.gewicht} kg`,
-                legende: data.lang.gewicht[settings.lang]
-            })
-
-        // Längenübersicht
-        if (ast.laenge) {
-            let parent = components.info({
-                parent: ui.elDetails,
-                legende: data.lang.laenge[settings.lang]
-            })
-            dom.create({
-                parent,
-                content: `${ast.laenge} ${data.lang.meter[settings.lang]}`,
-                classes: ['value'],
-                type: 'span'
-            })
-
-            let comparison = false;
-            data.schema_rezent.forEach(el => {
-                if (el.laenge < ast.laenge) comparison = el;
-            })
-
-            // Lebende Art zum Vergleich
-            let scale = comparison.laenge / ast.laenge;
-            console.log(scale);
-            parent.style.height = '100px';
-            dom.create({
-                type: 'img',
-                parent: parent.querySelector('.text'),
-                attr: {
-                    src: `./img/schema/${comparison.url}`
-                },
-                styles: {
-                    transform: `scale(${scale})`
-                },
-                classes: ['lengthIcon recent']
-            })
-
-            // Ausgestorbene Art
-            let typ = Object.entries(ast.typ).find(el => el[1])[0];
 
             dom.create({
-                type: 'img',
-                parent: parent.querySelector('.text'),
-                attr: {
-                    src: `./img/schema/${typ}.png`
-                },
-                classes: ['lengthIcon dino']
+                type: 'h3',
+                content: ast.bez,
+                parent: parentTitle
+            })
+
+            if (ast[settings.lang])
+                dom.create({
+                    type: 'h4',
+                    parent: parentTitle,
+                    content: ast[settings.lang]
+                })
+
+            // Lebenszeitraum
+            if (ast.mioJhrVon)
+                components.info({
+                    parent: ui.elDetails,
+                    content: `${ast.mioJhrVon} ${data.lang.mioJhr[settings.lang]}`,
+                    legende: `${data.lang.mioJhrVon[settings.lang]}`
+                })
+
+            if (ast.mioJhrBis)
+                components.info({
+                    parent: ui.elDetails,
+                    content: `${ast.mioJhrBis} ${data.lang.mioJhr[settings.lang]}`,
+                    legende: `${data.lang.mioJhrBis[settings.lang]}`
+                })
+
+            // Fundort
+            if (ast.fundort) {
+                let fundorte = ast.fundort.split(', ')
+                    .map(el => data.langLocations[el][settings.lang])
+                    .join(', ');
+
+                const parent = components.info({
+                    parent: ui.elDetails,
+                    content: fundorte,
+                    legende: data.lang.fundort[settings.lang]
+                })
+
+                dom.create({
+                    parent,
+                    type: 'img',
+                    attr: {
+                        src: './img/earthbg.png'
+                    },
+                    classes: ['imgLocation']
+                })
+
+                ast.fundort.split(', ').forEach(el => {
+                    // console.log(el)
+                })
+
+            }
+
+            // Gewicht
+            if (ast.gewicht)
+                components.info({
+                    parent: ui.elDetails,
+                    content: `${ast.gewicht} kg`,
+                    legende: data.lang.gewicht[settings.lang]
+                })
+
+            // Längenübersicht
+            if (ast.laenge) {
+                let parent = components.info({
+                    parent: ui.elDetails,
+                    legende: data.lang.laenge[settings.lang]
+                })
+                dom.create({
+                    parent,
+                    content: `${ast.laenge} ${data.lang.meter[settings.lang]}`,
+                    classes: ['value'],
+                    type: 'span'
+                })
+
+                let comparison = false;
+                data.schema_rezent.forEach(el => {
+                    if (el.laenge < ast.laenge) comparison = el;
+                })
+
+                // Lebende Art zum Vergleich
+                let scale = comparison.laenge / ast.laenge;
+                //console.log(scale);
+                parent.style.height = '100px';
+                dom.create({
+                    type: 'img',
+                    parent: parent.querySelector('.text'),
+                    attr: {
+                        src: `./img/schema/${comparison.url}`
+                    },
+                    styles: {
+                        transform: `scale(${scale})`
+                    },
+                    classes: ['lengthIcon recent']
+                })
+
+                // Ausgestorbene Art
+                let typ = Object.entries(ast.typ).find(el => el[1])[0];
+
+                dom.create({
+                    type: 'img',
+                    parent: parent.querySelector('.text'),
+                    attr: {
+                        src: `./img/schema/${typ}.png`
+                    },
+                    classes: ['lengthIcon dino']
+                })
+            }
+
+            // Lebensraum
+            components.infoIconset('lebensraum');
+
+            // Nahrung
+            components.infoIconset('nahrung')
+
+            // Schmuck
+            components.infoIconset('schmuck');
+
+
+            // Link-Buttons
+            const elLinks = dom.create({
+                parent: ui.elDetails,
+                classes: ['linkBtns']
+            })
+
+            components.linkBtn({
+                content: 'Wikipedia (en)',
+                link: `https://en.wikipedia.org/wiki/${ast.bez}`,
+                parent: elLinks
+            })
+
+            components.linkBtn({
+                content: 'Wikipedia (de)',
+                link: `https://de.wikipedia.org/wiki/${ast.bez}`,
+                parent: elLinks
+            })
+
+            components.linkBtn({
+                content: 'Dinosaurpictures',
+                link: `https://dinosaurpictures.org/${ast.bez}-pictures`,
+                parent: elLinks
+            })
+
+            components.linkBtn({
+                content: 'Dinopedia',
+                link: `https://dinopedia.fandom.com/wiki/${ast.bez}`,
+                parent: elLinks
             })
         }
-
-        // Lebensraum
-        components.infoIconset('lebensraum');
-
-        // Nahrung
-        components.infoIconset('nahrung')
-
-        // Schmuck
-        components.infoIconset('schmuck');
-
-
-        // Link-Buttons
-        const elLinks = dom.create({
-            parent: ui.elDetails,
-            classes: ['linkBtns']
-        })
-
-        components.linkBtn({
-            content: 'Wikipedia (en)',
-            link: `https://en.wikipedia.org/wiki/${ast.bez}`,
-            parent: elLinks
-        })
-
-        components.linkBtn({
-            content: 'Wikipedia (de)',
-            link: `https://de.wikipedia.org/wiki/${ast.bez}`,
-            parent: elLinks
-        })
-
-        components.linkBtn({
-            content: 'Dinosaurpictures',
-            link: `https://dinosaurpictures.org/${ast.bez}-pictures`,
-            parent: elLinks
-        })
-
-        components.linkBtn({
-            content: 'Dinopedia',
-            link: `https://dinopedia.fandom.com/wiki/${ast.bez}`,
-            parent: elLinks
-        })
-
     },
 
     ancestryChild(parent, child) {
@@ -368,6 +363,7 @@ const components = {
             settings.lang = sel.value;
             ui.updateUI();
             data.update();
+            data.saveSettings();
         }
 
         // DOM-Aufbau
@@ -429,11 +425,11 @@ const components = {
         }
 
         // DOM-Aufbau
+        // Filter nach Mio Jahre
         const inputsMioJhrs = dom.create({
             classes: ['inputs spalten2'],
             parent
         })
-
 
         dom.create({
             type: 'h5',
@@ -457,6 +453,32 @@ const components = {
             listeners: {
                 input(evt) { handleInput(evt, 'filterMinAge') }
             }
+        })
+
+        // Filter nach Fundort
+        dom.create({
+            parent,
+            type: 'h5',
+            content: data.lang.byLocation[settings.lang]
+        })
+
+        data.locations.forEach(loc => {
+            //console.log(loc);
+            const elFilterBtn = dom.create({
+                parent,
+                content: data.langLocations[loc][settings.lang],
+                classes: ['filterBtn', 'transit'],
+                listeners: {
+                    click() {
+                        if (!data.filterLocations.includes(loc)) data.filterLocations.push(loc);
+                        else data.filterLocations = data.filterLocations.filter(el => el != loc);
+                        components.filter();
+                        data.update();
+                    }
+                }
+            })
+            if (data.filterLocations.includes(loc))
+                elFilterBtn.classList.add('active');
         })
     }
 }

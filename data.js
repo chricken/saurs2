@@ -12,6 +12,7 @@ const data = {
     earliestAge: 358,
     filterMinAge: 0,
     filterMaxAge: 358,
+    filterLocations: [],
 
     // Zeitalter
     ages: [{
@@ -90,7 +91,7 @@ const data = {
 
         data.baum.forEach(selectEl);
 
-        //console.log(data.baumToDraw);
+        // console.log(data.baumToDraw.map(el => el.bez));
     },
 
     // Allen Gruppen das Alter der Kinder zuweisen, damit auch die Gruppen im Diagram ein Alter haben
@@ -207,16 +208,45 @@ const data = {
     },
 
     // Alle Fundorte in ein Array schreiben
-    getLocations(ast) {
-        ast.forEach(el => {
-            if (el.fundort) {
-                data.locations.add(...el.fundort.split(', '));
-            }
-            if (el.children) {
-                data.getLocations(el.children)
-            }
-        })
+    getLocations() {
+        const getLoc = ast => {
+            ast.forEach(el => {
+                if (el.fundort) {
+                    data.locations.add(...el.fundort.split(', '));
+                }
+                if (el.children) {
+                    getLoc(el.children)
+                }
+            })
+        }
+        getLoc(data.baum);
+        data.locations = [...data.locations];
+        data.locations.sort();
+    },
 
+    // Fundorte der Kinder an die Eltern weitergeben
+    locationsToParents(){
+        const locToParents = (ast, parentLoc) => {
+            ast.forEach(child => {
+                let loc = [];
+                // Eigene Fundorte an die der Eltern-Elemente hängen
+                if ( child.fundort ) {
+                    let fundort = child.fundort.split(', ');
+                    parentLoc.forEach(elParentLoc => {
+                        elParentLoc.push(...fundort);
+                        elParentLoc = [...new Set(elParentLoc)];
+                    });
+                }
+                parentLoc.push(loc);
+                if(child.children) {
+                    locToParents(child.children, [...parentLoc]);
+                    child.fundort = [...new Set(loc)].join(', ');
+                }
+
+            })
+
+        }
+        locToParents(data.baum, []);
     },
 
     // Spezies zählen
@@ -231,6 +261,19 @@ const data = {
         })
         return sumSpecies;
     },
+
+    // mögliche Fundorte sortieren
+    sortLocations(){
+        let locations = Object.entries(data.langLocations);
+        locations.sort((a,b) => a[1][settings.lang] > b[1][settings.lang]);
+        data.langLocations = {};
+        locations.forEach(loc => {
+            data.langLocations[loc[0]] = loc[1];
+        })
+       // console.log(data.langLocations);
+    },
+
+    // Nach Lebenszeitraum filtern
     filterByAge() {
         const filter = ast => {
             ast.forEach(el => {
@@ -241,6 +284,42 @@ const data = {
         }
         filter(data.baum);
     },
+
+    filterByLocations() {
+        if (data.filterLocations.length) {
+            const filter = ast => {
+                ast.forEach(el => {
+                    // Default: Element wird ausgefiltert
+                    let filtered = true;
+
+                    // Prüfen, ob ein Fundort hinterlegt ist
+                    if (el.fundort) {
+                        // Fundort und Filter vergleichen
+                        el.fundort.split(', ').forEach(fundort => {
+                            data.filterLocations.forEach(filter => {
+                                // Wessen Fundort im Filter gespeichert ist, wird eingebunden
+                                if (fundort == filter) filtered = false;
+                            })
+                        })
+                        el.filtered = el.filtered || filtered;
+                    } else {
+                        el.filtered = true;
+                    }
+                    if (el.children) filter(el.children);
+                })
+            }
+            filter(data.baum);
+        }
+    },
+
+    // Einstellungen sichern
+    saveSettings() {
+        let settingsToSave = {
+            lang: settings.lang
+        }
+        localStorage.setItem('settings', JSON.stringify(settingsToSave));
+    },
+
     // Baum aktualisieren
     update() {
         // Filter zurücksetzen
@@ -252,11 +331,12 @@ const data = {
         }
         resetFilter(data.baum);
         data.filterByAge();
+        data.filterByLocations();
+        data.sortLocations();
         data.calcPos(data.baum, 0);
         data.calcLowerEdge();
         data.fillBaumToDraw();
         draw.diagram();
-        // console.log(data.baum);
     },
 
     init() {
@@ -267,10 +347,9 @@ const data = {
             fetch('data/icons.json'),
             fetch('data/schema_dino.json'),
             fetch('data/schema_rezent.json'),
+            fetch('data/lang_locations.json'),
         ]).then(
-            res => {
-                return Promise.all(res.map(el => el.json()));
-            }
+            res => Promise.all(res.map(el => el.json()))
         ).then(
             res => {
                 data.baum = res[0];
@@ -279,6 +358,7 @@ const data = {
                 data.icons = res[3];
                 data.schema_dino = res[4];
                 data.schema_rezent = res[5];
+                data.langLocations = res[6];
             }
         ).then(
             () => Promise.all([
@@ -295,11 +375,23 @@ const data = {
                 data.legal_en = res[1];
             }
         ).then(
+            () => {
+                let saved = localStorage.getItem('settings');
+                if (saved) {
+                    saved = JSON.parse(saved);
+                    settings.lang = saved.lang;
+                }
+            }
+        ).then(
             () => data.baum = data.changeObjectToArray(data.baum)
+        ).then(
+            () => data.sortLocations()
         ).then(
             () => data.addLowerCase(data.baum)
         ).then(
-            () => data.getLocations(data.baum)
+            () => data.getLocations()
+        ).then(
+            () => data.locationsToParents()
         ).then(
             () => data.sort(data.baum, 'mioJhrVon', false)
         ).then(

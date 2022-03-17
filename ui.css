@@ -22,6 +22,7 @@ h6 {
     position: relative;
     display: block;
     font-weight: normal;
+    font-size: 1.5em;
     margin: 0;
 }
 
@@ -100,9 +101,30 @@ h4 {
 }
 
 .textContent {
-    font-weight: 300;
+    font-weight: 400;
+    font-size: 12px;
 }
 
+/* FILTER */
+.filterBtn {
+    position: relative;
+    display: inline-block;
+    padding: var(--abstand);
+    margin-left: var(--abstand);
+    background-color: var(--hellgrau);
+    font-size: 12px;
+    margin-right: var(--abstand);
+    cursor: pointer;
+}
+
+.filterBtn.active {
+    background-color: var(--hover)    ;
+}
+
+.filterBtn:hover {    
+    background-color: var(--grau);
+    
+}
 
 /* DETAILS */
 
@@ -171,8 +193,16 @@ h4 {
     left: 0;
     top: 0;
     width: 100px;
+    transform-origin: bottom;
 }
 
+.lengthIcon.dino {
+    opacity: .8;
+}
+
+.imgLocation {
+    width: 295px;
+}
 
 /* Inputs */
 
