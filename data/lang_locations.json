@@ -31,6 +31,10 @@
         "de": "Mexiko",
         "en": "Mexico"
     },
+    "karibik": {
+        "de": "Karibik",
+        "en": "Caribean"
+    },
     "suedamerika": {
         "de": "Südamerika",
         "en": "Southamerica"
@@ -42,6 +46,10 @@
     "argentinien": {
         "de": "Argentinien",
         "en": "Argentina"
+    },
+    "brasilien": {
+        "de": "Brasilien",
+        "en": "Brazil"
     },
     "china": {
         "de": "China",
@@ -71,6 +79,10 @@
         "de": "Asien (Südost)",
         "en": "Asia (South East)"
     },
+    "sibirien": {
+        "de": "Sibirien",
+        "en": "Siberia"
+    },
     "asienost": {
         "de": "Asien (Ost)",
         "en": "Asia (East)"
@@ -79,9 +91,9 @@
         "de": "Asien (Mitte)",
         "en": "Asia (Central)"
     },
-    "russland": {
-        "de": "Russland",
-        "en": "Russia"
+    "asiennord": {
+        "de": "Nordasien",
+        "en": "Northern Asia"
     },
     "japan": {
         "de": "Japan",
