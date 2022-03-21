@@ -11,6 +11,10 @@ const components = {
         ui.elLegal.innerHTML = data[`legal_${settings.lang}`];
     },
 
+    about() {
+        ui.elAbout.innerHTML = data[`about_${settings.lang}`];
+    },
+
     info({
         content = false,
         legende = '',

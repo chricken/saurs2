@@ -323,11 +323,15 @@
         "de": "Rechtliches",
         "en": "Legal"
     },
+    "aboutTheProject": {
+        "de": "Über das Projekt",
+        "en": "About the project"
+    },
     "byage": {
         "de": "Nach Alter",
         "en": "By Age"
     },
-    "byLocation":{
+    "byLocation": {
         "de": "Nach Fundort",
         "en": "By location"
     },

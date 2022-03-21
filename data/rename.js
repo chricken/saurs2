@@ -6,8 +6,8 @@ const fs = require('fs');
 let data = false;
 let locations = new Set();
 
-let suchen = ['Indonesien'];
-let ersetzen = 'sunda';
+let suchen = ['europamittel'];
+let ersetzen = 'europamitte';
 
 let count = 0;
 

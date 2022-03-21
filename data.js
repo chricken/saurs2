@@ -225,12 +225,12 @@ const data = {
     },
 
     // Fundorte der Kinder an die Eltern weitergeben
-    locationsToParents(){
+    locationsToParents() {
         const locToParents = (ast, parentLoc) => {
             ast.forEach(child => {
                 let loc = [];
                 // Eigene Fundorte an die der Eltern-Elemente hängen
-                if ( child.fundort ) {
+                if (child.fundort) {
                     let fundort = child.fundort.split(', ');
                     parentLoc.forEach(elParentLoc => {
                         elParentLoc.push(...fundort);
@@ -238,7 +238,7 @@ const data = {
                     });
                 }
                 parentLoc.push(loc);
-                if(child.children) {
+                if (child.children) {
                     locToParents(child.children, [...parentLoc]);
                     child.fundort = [...new Set(loc)].join(', ');
                 }
@@ -263,14 +263,14 @@ const data = {
     },
 
     // mögliche Fundorte sortieren
-    sortLocations(){
+    sortLocations() {
         let locations = Object.entries(data.langLocations);
-        locations.sort((a,b) => a[1][settings.lang] > b[1][settings.lang]);
+        locations.sort((a, b) => a[1][settings.lang] > b[1][settings.lang]);
         data.langLocations = {};
         locations.forEach(loc => {
-            data.langLocations[loc[0]] = loc[1];
-        })
-       // console.log(data.langLocations);
+                data.langLocations[loc[0]] = loc[1];
+            })
+            // console.log(data.langLocations);
     },
 
     // Nach Lebenszeitraum filtern
@@ -364,6 +364,8 @@ const data = {
             () => Promise.all([
                 fetch('data/legal_de.html'),
                 fetch('data/legal_en.html'),
+                fetch('data/about_de.html'),
+                fetch('data/about_en.html'),
             ])
         ).then(
             res => {
@@ -373,6 +375,8 @@ const data = {
             res => {
                 data.legal_de = res[0];
                 data.legal_en = res[1];
+                data.about_de = res[2];
+                data.about_en = res[3];
             }
         ).then(
             () => {

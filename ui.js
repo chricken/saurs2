@@ -41,15 +41,6 @@ const ui = {
             let elTitle = uiElement.querySelector('.title');
             elTitle.addEventListener('click', () => {
                 uiElement.classList.toggle('active');
-                /*
-                if (uiElement.classList.contains('active')) {
-                    uiElement.classList.remove('active');
-                } else {
-                    //console.log(elTitle);
-                    ui.elements.forEach(el => el.classList.remove('active'));
-                    uiElement.classList.add('active');
-                }
-                */
             })
         })
     },
@@ -87,6 +78,7 @@ const ui = {
         components.search();
         components.settings();
         components.legal();
+        components.about();
 
     },
 
@@ -96,6 +88,7 @@ const ui = {
             ui.elTitle = document.querySelector('#uiTitle');
             ui.elDetails = document.querySelector('#uiDetails .content');
             ui.elLegal = document.querySelector('#uiLegal .content');
+            ui.elAbout = document.querySelector('#uiAbout .content');
             ui.elements = [...document.querySelectorAll('#ui .uiElement')];
 
             //ui.pos = [ui.el.offsetLeft, ui.el.offsetTop];
