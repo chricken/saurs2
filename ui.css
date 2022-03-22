@@ -105,7 +105,9 @@ h4 {
     font-size: 12px;
 }
 
+
 /* FILTER */
+
 .filterBtn {
     position: relative;
     display: inline-block;
@@ -118,13 +120,13 @@ h4 {
 }
 
 .filterBtn.active {
-    background-color: var(--hover)    ;
+    background-color: var(--hover);
 }
 
-.filterBtn:hover {    
+.filterBtn:hover {
     background-color: var(--grau);
-    
 }
+
 
 /* DETAILS */
 
@@ -200,9 +202,22 @@ h4 {
     opacity: .8;
 }
 
-.imgLocation {
-    width: 295px;
+.parentImgs {
+    position: relative;
 }
+
+.imgLocation {
+    position: absolute;
+    display: block;
+    width: 295px;
+    top: 0;
+    left: 0;
+}
+
+.imgLocation.sizeReference {
+    position: relative;
+}
+
 
 /* Inputs */
 

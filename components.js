@@ -147,18 +147,33 @@ const components = {
                     content: fundorte,
                     legende: data.lang.fundort[settings.lang]
                 })
-
-                dom.create({
+                const parentImgs = dom.create({
                     parent,
+                    classes: ['parentImgs']
+                })
+                dom.create({
+                    parent: parentImgs,
                     type: 'img',
                     attr: {
-                        src: './img/earthbg.png'
+                        src: './img/loc/bg.png'
                     },
-                    classes: ['imgLocation']
+                    classes: ['imgLocation', 'sizeReference']
                 })
 
                 ast.fundort.split(', ').forEach(el => {
-                    // console.log(el)
+                    dom.create({
+                        parent: parentImgs,
+                        type: 'img',
+                        attr: {
+                            src: `./img/loc/${el}.png`
+                        },
+                        classes: ['imgLocation'],
+                        listeners: {
+                            error(evt) {
+                                console.log(el);
+                            }
+                        }
+                    })
                 })
 
             }
@@ -167,7 +182,7 @@ const components = {
             if (ast.gewicht)
                 components.info({
                     parent: ui.elDetails,
-                    content: `${ast.gewicht} kg`,
+                    content: `${ast.gewicht}kg`,
                     legende: data.lang.gewicht[settings.lang]
                 })
 
@@ -236,7 +251,8 @@ const components = {
 
             components.linkBtn({
                 content: 'Wikipedia (en)',
-                link: `https://en.wikipedia.org/wiki/${ast.bez}`,
+                link: `
+                                        https: //en.wikipedia.org/wiki/${ast.bez}`,
                 parent: elLinks
             })
 
