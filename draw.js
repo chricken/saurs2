@@ -24,6 +24,8 @@ const draw = {
     imgGrungeGreen: false,
     imgGrungeBlack: false,
 
+    elClosers: [],
+
     hueGroup: {
         hueMin: 170,
         hueMax: 190,
@@ -220,21 +222,54 @@ const draw = {
 
         // Grunge
         if (grunge) {
-            /*
-            console.log(grunge);
-            console.log(0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2));
-            console.log(left, top, right - left, settings.heightGroup - (padding * 2));
-            */
+
             ctx.drawImage(grunge,
                 0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
                 left, top, right - left, settings.heightGroup - (padding * 2)
             )
         }
 
-        //draw.link(el, ctx, width, height, left, top + padding);
         draw.bezeichnung(el, ctx, width, height, left, right, top)
+
     },
 
+    closers() {
+        let ctx = draw.cClosers.getContext('2d');
+        ctx.clearRect(0, 0, draw.cClosers.width, draw.cClosers.height);
+
+        let width = draw.cDiagram.width;
+        let h = settings.heightGroup;
+        let anfang = data.ages[0].von;
+
+        data.baumToDraw.forEach(el => {
+            // Linke Kante der Gruppe
+            let left = width - (width / anfang * el.mioJhrVon);
+            let top = el.pos - win.scrollTop;
+
+            // Closer-Triangle speichern, um den späteren Rollover und Click zu realisieren
+            let closer = {
+                left: left - (h / 6),
+                top: top + (h / 5),
+                width: h / 5 * 2,
+                height: h / 5 * 3,
+                el
+            }
+            draw.elClosers.push(closer);
+
+            if (el.children) {
+                ctx.fillStyle = el.hover ? '#000' : '#fff';
+                ctx.strokeStyle = '#000';
+                ctx.beginPath();
+                ctx.moveTo(closer.left, closer.top);
+                ctx.lineTo(closer.left + closer.width, closer.top + (closer.height / 2));
+                ctx.lineTo(closer.left, closer.top + closer.height);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+        })
+
+    },
     species(el, ctx, width, height) {
         let padding = 1;
 
@@ -385,13 +420,17 @@ const draw = {
     },
 
     diagram() {
-        // console.time();
+        //Schließer-Dreiecke resetten
+        draw.elClosers = [];
+
         let width = draw.cDiagram.width;
         let height = draw.cDiagram.height;
         let ctx = draw.cDiagram.getContext('2d');
         ctx.clearRect(0, 0, width, height);
 
         draw.scrollbar(ctx, width, height);
+
+        draw.allLinks(data.baum, ctx, width);
 
         // Gruppen und Spezies zeichnen
         data.baumToDraw.forEach(el => {
@@ -401,10 +440,10 @@ const draw = {
         })
 
         // Linien auch außerhalb des Viewports zeichnen
-        draw.allLinks(data.baum, ctx, width);
 
         // console.timeEnd();        
     },
+
 
     loadImgs() {
         let imgs = [
@@ -424,6 +463,7 @@ const draw = {
         return new Promise(resolve => {
             draw.cAges = dom.$('#cAges');
             draw.cDiagram = dom.$('#cDiagram');
+            draw.cClosers = dom.$('#cClosers');
             draw.loadImgs().then(
                 resolve
             )

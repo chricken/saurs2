@@ -144,7 +144,7 @@ const components = {
 
                 const parent = components.info({
                     parent: ui.elDetails,
-                    content: fundorte,
+                    //content: fundorte,
                     legende: data.lang.fundort[settings.lang]
                 })
                 const parentImgs = dom.create({
@@ -251,8 +251,7 @@ const components = {
 
             components.linkBtn({
                 content: 'Wikipedia (en)',
-                link: `
-                                        https: //en.wikipedia.org/wiki/${ast.bez}`,
+                link: `https: //en.wikipedia.org/wiki/${ast.bez}`,
                 parent: elLinks
             })
 
@@ -483,7 +482,7 @@ const components = {
         })
 
         data.locations.forEach(loc => {
-            //console.log(loc);
+            // console.log(loc);
             const elFilterBtn = dom.create({
                 parent,
                 content: data.langLocations[loc][settings.lang],

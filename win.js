@@ -18,6 +18,7 @@ const win = {
         draw.cDiagram.height = window.innerHeight;
         draw.ages();
         draw.diagram();
+        draw.closers();
         dom.$('#ui .inner').style.maxHeight = `${draw.cDiagram.height * .8}px`;
     },
 
@@ -28,6 +29,7 @@ const win = {
         data.fillBaumToDraw();
         //draw.ages();
         draw.diagram();
+        draw.closers();
     },
 
     // Auf ein Scrollen mit dem Mausrad reagieren
@@ -100,28 +102,50 @@ const win = {
     // Position eintragen, an der die Maus ist, um später im Zeichenprozess die drunterliegende Spezies/Gruppe zu markieren
     handleMove(evt) {
         draw.mouseY = evt.layerY;
-        draw.ages();
+        draw.mouseX = evt.layerX;
+    
+        draw.elClosers.find(closer => {
+            if (
+                draw.mouseX > closer.left
+                && draw.mouseX < closer.left + closer.width
+                && draw.mouseY > closer.top
+                && draw.mouseY < closer.top + closer.height
+            ) {
+                closer.el.hover = true;
+                //console.log(closer.el.bez);
+                return true
+            } else {
+                closer.el.hover = false;
+                return false;
+            }
+        })
 
         if (win.scrollbarSelected) {
             win.scrollTo(evt);
         }
+
+        draw.ages();
+       // draw.diagram();
+        draw.closers();
     },
 
     init() {
         return new Promise(resolve => {
             window.addEventListener('resize', win.handleResize);
             window.addEventListener('scroll', win.handleScroll);
-            draw.cDiagram.addEventListener('wheel', win.handleWheel);
+            draw.cClosers.addEventListener('wheel', win.handleWheel);
 
-            draw.cDiagram.addEventListener('mousedown', win.markSelected);
-            draw.cDiagram.addEventListener('mouseup', win.leaveMouse);
-            draw.cDiagram.addEventListener('mousemove', win.handleMove);
+            draw.cClosers.addEventListener('mousedown', win.markSelected);
+            draw.cClosers.addEventListener('mouseup', win.leaveMouse);
+            draw.cClosers.addEventListener('mousemove', win.handleMove);
 
             // Größen auslesen ohne Redraw
             draw.cAges.width = window.innerWidth;
             draw.cAges.height = window.innerHeight;
             draw.cDiagram.width = window.innerWidth;
             draw.cDiagram.height = window.innerHeight;
+            draw.cClosers.width = window.innerWidth;
+            draw.cClosers.height = window.innerHeight;
 
             win.scrollBottom = win.scrollTop + window.innerHeight;
             // win.handleResize();

@@ -337,6 +337,7 @@ const data = {
         data.calcLowerEdge();
         data.fillBaumToDraw();
         draw.diagram();
+        draw.closers();
     },
 
     init() {
