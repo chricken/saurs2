@@ -251,7 +251,7 @@ const components = {
 
             components.linkBtn({
                 content: 'Wikipedia (en)',
-                link: `https: //en.wikipedia.org/wiki/${ast.bez}`,
+                link: `https://en.wikipedia.org/wiki/${ast.bez}`,
                 parent: elLinks
             })
 
