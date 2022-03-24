@@ -84,7 +84,7 @@ const data = {
             ) {
                 data.baumToDraw.push(el);
             }
-            if (el.children) {
+            if (el.children && !el.collapsed) {
                 el.children.forEach(selectEl);
             }
         }
@@ -138,9 +138,6 @@ const data = {
                 pos :
                 data.lowerEdge;
         })
-
-
-
         return pos;
     },
     calcLowerEdge() {

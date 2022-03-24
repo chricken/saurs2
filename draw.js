@@ -222,7 +222,6 @@ const draw = {
 
         // Grunge
         if (grunge) {
-
             ctx.drawImage(grunge,
                 0, el.pos % grunge.naturalHeight, right - left, settings.heightGroup - (padding * 2),
                 left, top, right - left, settings.heightGroup - (padding * 2)
@@ -233,7 +232,19 @@ const draw = {
 
     },
 
+    // Checken, ob die Maus einen Closer berührt
+    closerUnderMouse() {
+        return draw.elClosers.find(closer => {
+            return (draw.mouseX > closer.left
+                && draw.mouseX < closer.left + closer.width
+                && draw.mouseY > closer.top
+                && draw.mouseY < closer.top + closer.height
+            )
+        })
+    },
+
     closers() {
+        draw.elClosers = [];
         let ctx = draw.cClosers.getContext('2d');
         ctx.clearRect(0, 0, draw.cClosers.width, draw.cClosers.height);
 
@@ -260,9 +271,17 @@ const draw = {
                 ctx.fillStyle = el.hover ? '#000' : '#fff';
                 ctx.strokeStyle = '#000';
                 ctx.beginPath();
-                ctx.moveTo(closer.left, closer.top);
-                ctx.lineTo(closer.left + closer.width, closer.top + (closer.height / 2));
-                ctx.lineTo(closer.left, closer.top + closer.height);
+
+                if (!el.collapsed) {
+                    ctx.moveTo(closer.left-3, closer.top+3);
+                    ctx.lineTo(closer.left + closer.width + 3, closer.top+3);
+                    ctx.lineTo(closer.left + (closer.width / 2), closer.top + (closer.height));
+                } else {
+                    ctx.moveTo(closer.left, closer.top);
+                    ctx.lineTo(closer.left + closer.width, closer.top + (closer.height / 2));
+                    ctx.lineTo(closer.left, closer.top + closer.height);
+                }
+
                 ctx.closePath();
                 ctx.fill();
                 ctx.stroke();
@@ -400,7 +419,7 @@ const draw = {
 
             }
             // Kinder iterieren
-            if (el.children) draw.allLinks(el.children, ctx, width);
+            if (el.children && !el.collapsed) draw.allLinks(el.children, ctx, width);
         })
     },
 
@@ -421,7 +440,7 @@ const draw = {
 
     diagram() {
         //Schließer-Dreiecke resetten
-        draw.elClosers = [];
+        //draw.elClosers = [];
 
         let width = draw.cDiagram.width;
         let height = draw.cDiagram.height;
@@ -441,11 +460,11 @@ const draw = {
 
         // Linien auch außerhalb des Viewports zeichnen
 
-        // console.timeEnd();        
+        // console.timeEnd();
     },
 
-
     loadImgs() {
+
         let imgs = [
             { key: 'imgGrungeRed', url: 'img/grunge_brown.png' },
             { key: 'imgGrungeBlack', url: 'img/grunge_black.png' },

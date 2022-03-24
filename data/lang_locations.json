@@ -218,5 +218,9 @@
     "groenland": {
         "de": "Groenland",
         "en": "Greenland"
+    },
+    "chooseOption": {
+        "de": "Option wählen",
+        "en": "Choose an option"
     }
 }

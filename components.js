@@ -481,23 +481,39 @@ const components = {
             content: data.lang.byLocation[settings.lang]
         })
 
+        let selectFilter = dom.create({
+            type: 'select',
+            listeners: {
+                change() {
+                    //console.log(data.filterLocations);
+                    data.filterLocations = 
+                        (selectFilter.value == 'none') ? [] : [selectFilter.value];
+                    //if (!data.filterLocations.includes(selectFilter.value)) 
+                    //    data.filterLocations.push(selectFilter.value);
+                    //else data.filterLocations = data.filterLocations.filter(el => el != loc);
+                    //components.filter();
+                    data.update();
+                }
+            },
+            parent
+        })
+        dom.create({
+            type: 'option',
+            parent: selectFilter,
+            content: data.langLocations.chooseOption[settings.lang],
+            attr: {
+                value: 'none'
+            }
+        })
         data.locations.forEach(loc => {
-            // console.log(loc);
-            const elFilterBtn = dom.create({
-                parent,
+            dom.create({
+                type: 'option',
+                parent: selectFilter,
                 content: data.langLocations[loc][settings.lang],
-                classes: ['filterBtn', 'transit'],
-                listeners: {
-                    click() {
-                        if (!data.filterLocations.includes(loc)) data.filterLocations.push(loc);
-                        else data.filterLocations = data.filterLocations.filter(el => el != loc);
-                        components.filter();
-                        data.update();
-                    }
+                attr: {
+                    value: loc
                 }
             })
-            if (data.filterLocations.includes(loc))
-                elFilterBtn.classList.add('active');
         })
     }
 }
