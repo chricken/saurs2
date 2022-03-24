@@ -91,6 +91,10 @@
         "de": "China (Nord)",
         "en": "China (North)"
     },
+    "chinasued": {
+        "de": "China (Süd)",
+        "en": "China (South)"
+    },
     "russland": {
         "de": "Russland",
         "en": "Russia"
