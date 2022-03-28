@@ -67,7 +67,10 @@ const ui = {
             let translateFrom = el.querySelector('.translateFrom');
             let translateTo = el.querySelector('.translateTo');
 
+            // console.log(translateFrom.innerHTML);
+
             translateTo.innerHTML = data.lang[translateFrom.innerHTML][settings.lang];
+            
         })
 
     },

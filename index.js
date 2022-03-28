@@ -10,21 +10,19 @@ import ui from './ui.js'
 
 // FUNKTIONEN
 const init = () => {
+
     draw.init().then(
         win.init
     ).then(
         data.init
     ).then(
-        () => win.handleResize()
+        win.handleResize
     ).then(
-        () => {
-            draw.ages()
-                // console.log(data);
-        }
+        draw.ages
     ).then(
-        () => data.update()
+        data.update
     ).then(
-        () => ui.init()
+        ui.init
     ).catch(
         console.warn
     )

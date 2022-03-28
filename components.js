@@ -108,15 +108,16 @@ const components = {
                 classes: ['elTitle']
             })
 
+            // Title
             dom.create({
-                type: 'h3',
+                type: 'h2',
                 content: ast.bez,
                 parent: parentTitle
             })
 
             if (ast[settings.lang])
                 dom.create({
-                    type: 'h4',
+                    type: 'h3',
                     parent: parentTitle,
                     content: ast[settings.lang]
                 })
@@ -134,6 +135,22 @@ const components = {
                     parent: ui.elDetails,
                     content: `${ast.mioJhrBis} ${data.lang.mioJhr[settings.lang]}`,
                     legende: `${data.lang.mioJhrBis[settings.lang]}`
+                })
+
+            // Benannt
+            if (ast.entdeckt)
+                components.info({
+                    parent: ui.elDetails,
+                    content: `${ast.entdeckt}`,
+                    legende: `${data.lang.benannt[settings.lang]}`
+                })
+
+            // Gewicht
+            if (ast.gewicht)
+                components.info({
+                    parent: ui.elDetails,
+                    content: `${ast.gewicht}kg`,
+                    legende: data.lang.gewicht[settings.lang]
                 })
 
             // Fundort
@@ -177,14 +194,6 @@ const components = {
                 })
 
             }
-
-            // Gewicht
-            if (ast.gewicht)
-                components.info({
-                    parent: ui.elDetails,
-                    content: `${ast.gewicht}kg`,
-                    legende: data.lang.gewicht[settings.lang]
-                })
 
             // Längenübersicht
             if (ast.laenge) {
@@ -317,7 +326,7 @@ const components = {
         // Callback-Funktion
         const handleInput = evt => {
             const found = [];
-            const input = evt.target.value;
+            const input = evt.target.value.toLowerCase();
             const checkNames = ast => {
                 ast.forEach(el => {
                     if (
@@ -486,7 +495,7 @@ const components = {
             listeners: {
                 change() {
                     //console.log(data.filterLocations);
-                    data.filterLocations = 
+                    data.filterLocations =
                         (selectFilter.value == 'none') ? [] : [selectFilter.value];
                     //if (!data.filterLocations.includes(selectFilter.value)) 
                     //    data.filterLocations.push(selectFilter.value);

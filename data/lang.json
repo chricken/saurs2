@@ -31,6 +31,10 @@
         "de": "Englisch",
         "en": "English"
     },
+    "filter": {
+        "de": "Filter",
+        "en": "Filter"
+    },
     "lebensraum": {
         "de": "Lebensraum",
         "en": "Habitat"
@@ -42,6 +46,10 @@
     "entdeckt": {
         "de": "Jahr der Entdeckung",
         "en": "Year of Discovery"
+    },
+    "benannt": {
+        "de": "Jahr der Benennung",
+        "en": "Year of Naming"
     },
     "gewicht": {
         "de": "Gewicht",
@@ -338,10 +346,6 @@
     "byname": {
         "de": "Nach Bezeichnung",
         "en": "By Naming"
-    },
-    "filter": {
-        "de": "Filter",
-        "en": "Filter"
     },
     "chooseOption":{
         "de": "Bitte wählen",

@@ -1,5 +1,5 @@
 const settings = {
-    lang: 'de',
+    lang: 'en',
     heightGroup: 40,
     heightSpecies: 40,
 
