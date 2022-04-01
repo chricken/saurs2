@@ -69,7 +69,7 @@ const components = {
 
     // Icons, um bspw Lebensraum oder Nahrung zu zeigen
     infoIconset(attrName) {
-        if (data.selected[attrName]) {
+        if (data.selected[attrName].length) {
             const parent = dom.create({
                 classes: [`${attrName} info`],
                 parent: ui.elDetails
@@ -83,15 +83,16 @@ const components = {
             })
 
             // Mögliche Lebensräume filtern und iterieren
-            Object.entries(data.selected[attrName])
-                .filter(el => el[1])
-                .map(el => el[0])
+            console.log(attrName, data.selected[attrName]);
+            data.selected[attrName]
                 .forEach(el => {
+                    // console.log(el);
                     dom.create({
                         parent,
                         type: 'img',
                         attr: {
-                            src: `./img/${data.icons[el]}.png`
+                            src: `./img/${data.icons[el]}.png`,
+                            title: data.lang[el][settings.lang]
                         },
                         classes: ['infoIcon']
                     })
@@ -155,9 +156,12 @@ const components = {
 
             // Fundort
             if (ast.fundort) {
-                let fundorte = ast.fundort.split(', ')
+
+                /*
+                let fundorte = ast.fundort
                     .map(el => data.langLocations[el][settings.lang])
                     .join(', ');
+                */
 
                 const parent = components.info({
                     parent: ui.elDetails,
@@ -177,7 +181,7 @@ const components = {
                     classes: ['imgLocation', 'sizeReference']
                 })
 
-                ast.fundort.split(', ').forEach(el => {
+                ast.fundort.forEach(el => {
                     dom.create({
                         parent: parentImgs,
                         type: 'img',
@@ -196,25 +200,37 @@ const components = {
             }
 
             // Längenübersicht
-            if (ast.laenge) {
+            if (ast.laenge || ast.spannweite) {
+                // Soll Länge oder Spannweite angezeigt werden
+                let size = {
+                    legende: 'laenge',
+                    value: ast.laenge
+                }
+                if (ast.spannweite) {
+                    size = {
+                        legende: 'spannweite',
+                        value: ast.spannweite
+                    }
+                }
+                console.log(size);
                 let parent = components.info({
                     parent: ui.elDetails,
-                    legende: data.lang.laenge[settings.lang]
+                    legende: data.lang[size.legende][settings.lang]
                 })
                 dom.create({
                     parent,
-                    content: `${ast.laenge} ${data.lang.meter[settings.lang]}`,
+                    content: `${size.value} ${data.lang.meter[settings.lang]}`,
                     classes: ['value'],
                     type: 'span'
                 })
 
                 let comparison = false;
                 data.schema_rezent.forEach(el => {
-                    if (el.laenge < ast.laenge) comparison = el;
+                    if (el.laenge < size.value) comparison = el;
                 })
-
+                console.log(comparison);
                 // Lebende Art zum Vergleich
-                let scale = comparison.laenge / ast.laenge;
+                let scale = comparison.laenge / size.value;
                 //console.log(scale);
                 parent.style.height = '100px';
                 dom.create({
@@ -230,13 +246,13 @@ const components = {
                 })
 
                 // Ausgestorbene Art
-                let typ = Object.entries(ast.typ).find(el => el[1])[0];
+                //let typ = Object.entries(ast.typ).find(el => el[1])[0];
 
                 dom.create({
                     type: 'img',
                     parent: parent.querySelector('.text'),
                     attr: {
-                        src: `./img/schema/${typ}.png`
+                        src: `./img/schema/${ast.typ}.png`
                     },
                     classes: ['lengthIcon dino']
                 })
@@ -515,14 +531,17 @@ const components = {
             }
         })
         data.locations.forEach(loc => {
-            dom.create({
-                type: 'option',
-                parent: selectFilter,
-                content: data.langLocations[loc][settings.lang],
-                attr: {
-                    value: loc
-                }
-            })
+            // console.log(loc);
+            if (loc) {
+                dom.create({
+                    type: 'option',
+                    parent: selectFilter,
+                    content: data.langLocations[loc][settings.lang],
+                    attr: {
+                        value: loc
+                    }
+                })
+            }
         })
     }
 }

@@ -209,7 +209,7 @@ const data = {
         const getLoc = ast => {
             ast.forEach(el => {
                 if (el.fundort) {
-                    data.locations.add(...el.fundort.split(', '));
+                    data.locations.add(...el.fundort);
                 }
                 if (el.children) {
                     getLoc(el.children)
@@ -228,7 +228,7 @@ const data = {
                 let loc = [];
                 // Eigene Fundorte an die der Eltern-Elemente hängen
                 if (child.fundort) {
-                    let fundort = child.fundort.split(', ');
+                    let fundort = child.fundort;
                     parentLoc.forEach(elParentLoc => {
                         elParentLoc.push(...fundort);
                         elParentLoc = [...new Set(elParentLoc)];
@@ -237,7 +237,7 @@ const data = {
                 parentLoc.push(loc);
                 if (child.children) {
                     locToParents(child.children, [...parentLoc]);
-                    child.fundort = [...new Set(loc)].join(', ');
+                    child.fundort = [...new Set(loc)];
                 }
 
             })
@@ -292,7 +292,7 @@ const data = {
                     // Prüfen, ob ein Fundort hinterlegt ist
                     if (el.fundort) {
                         // Fundort und Filter vergleichen
-                        el.fundort.split(', ').forEach(fundort => {
+                        el.fundort.forEach(fundort => {
                             data.filterLocations.forEach(filter => {
                                 // Wessen Fundort im Filter gespeichert ist, wird eingebunden
                                 if (fundort == filter) filtered = false;
