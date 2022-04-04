@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "better-opn": "^3.0.2",
+    "express": "^4.17.3"
+  }
+}
