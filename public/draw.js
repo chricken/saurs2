@@ -175,7 +175,7 @@ const draw = {
         let anfang = data.ages[0].von;
 
         let left = width - (width / anfang * el.mioJhrVon);
-        let right = width - (width / anfang * el.mioJhrBis);
+        let right = width - (width / anfang * (el.mioJhrBis || 0));
         let top = el.pos + padding - win.scrollTop;
 
         // Ggf Untergrund zeichnen
@@ -273,8 +273,8 @@ const draw = {
                 ctx.beginPath();
 
                 if (!el.collapsed) {
-                    ctx.moveTo(closer.left-3, closer.top+3);
-                    ctx.lineTo(closer.left + closer.width + 3, closer.top+3);
+                    ctx.moveTo(closer.left - 3, closer.top + 3);
+                    ctx.lineTo(closer.left + closer.width + 3, closer.top + 3);
                     ctx.lineTo(closer.left + (closer.width / 2), closer.top + (closer.height));
                 } else {
                     ctx.moveTo(closer.left, closer.top);
@@ -295,7 +295,7 @@ const draw = {
         let anfang = data.ages[0].von;
 
         let left = width - (width / anfang * el.mioJhrVon);
-        let right = width - (width / anfang * el.mioJhrBis);
+        let right = width - (width / anfang * (el.mioJhrBis || 0));
         let top = el.pos + padding - win.scrollTop;
 
 

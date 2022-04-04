@@ -155,14 +155,8 @@ const components = {
                 })
 
             // Fundort
-            if (ast.fundort) {
-
-                /*
-                let fundorte = ast.fundort
-                    .map(el => data.langLocations[el][settings.lang])
-                    .join(', ');
-                */
-
+            if (ast.fundort && ast.fundort.length > 0) {
+                console.log(ast.fundort);
                 const parent = components.info({
                     parent: ui.elDetails,
                     //content: fundorte,
@@ -200,6 +194,7 @@ const components = {
             }
 
             // Längenübersicht
+            console.log(ast.typ);
             if (ast.laenge || ast.spannweite) {
                 // Soll Länge oder Spannweite angezeigt werden
                 let size = {
@@ -212,7 +207,7 @@ const components = {
                         value: ast.spannweite
                     }
                 }
-                console.log(size);
+                // console.log(size);
                 let parent = components.info({
                     parent: ui.elDetails,
                     legende: data.lang[size.legende][settings.lang]
@@ -229,6 +224,7 @@ const components = {
                     if (el.laenge < size.value) comparison = el;
                 })
                 console.log(comparison);
+
                 // Lebende Art zum Vergleich
                 let scale = comparison.laenge / size.value;
                 //console.log(scale);
@@ -247,6 +243,7 @@ const components = {
 
                 // Ausgestorbene Art
                 //let typ = Object.entries(ast.typ).find(el => el[1])[0];
+                console.log(ast.typ);
 
                 dom.create({
                     type: 'img',
